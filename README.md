@@ -60,3 +60,22 @@ is what that would look like on the board:
 * Knight castle: **O**
 * Close pawn castle: **O-O**
 * Far pawn castle: **O-O-O**
+
+### Sample Game
+
+```pgn
+1.O-O a3
+2.Nc2 a2
+3.b3+ Nxb3+
+4.Kb2 a1=Q+
+5.Nxa1 Nxa1
+6.Kxa1 Kc3
+7.Ka2 b3+
+8.Ka1 b2+
+9.Kb1 Kb3
+10.d3 Kc3
+11.d4=Q+ Kxd4
+12.Kxb2 1/2-1/2
+
+Drawn by Insufficient Material
+```

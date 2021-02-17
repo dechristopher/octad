@@ -2,7 +2,7 @@
 
 **image** is an octad image utility that converts board positions into
 [SVG](https://en.wikipedia.org/wiki/Scalable_Vector_Graphics), or Scalable
-Vector Graphics, images.  [svgo](https://github.com/ajstarks/svgo), the only
+Vector Graphics, images.[svgo](https://github.com/ajstarks/svgo), the only
 outside dependency, is used to construct the SVG document.
 
 ## Usage

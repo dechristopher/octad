@@ -1,4 +1,4 @@
-// Package image is a go library that creates images from board positions
+// Package image is a go library that creates images from octad board positions
 package image
 
 import (
@@ -22,7 +22,7 @@ func SVG(w io.Writer, b *octad.Board, opts ...func(*encoder)) error {
 }
 
 // SquareColors is designed to be used as an optional argument
-// to the SVG function.  It changes the default light and
+// to the SVG function.It changes the default light and
 // dark square colors to the colors given.
 func SquareColors(light, dark color.Color) func(*encoder) {
 	return func(e *encoder) {
@@ -32,8 +32,8 @@ func SquareColors(light, dark color.Color) func(*encoder) {
 }
 
 // MarkSquares is designed to be used as an optional argument
-// to the SVG function.  It marks the given squares with the
-// color.  A possible usage includes marking squares of the
+// to the SVG function.It marks the given squares with the
+// color.A possible usage includes marking squares of the
 // previous move.
 func MarkSquares(c color.Color, sqs ...octad.Square) func(*encoder) {
 	return func(e *encoder) {
@@ -80,7 +80,7 @@ var (
 )
 
 // EncodeSVG writes the board SVG representation into
-// the Encoder's writer.  An error is returned if there
+// the Encoder's writer.An error is returned if there
 // is there is an error writing data.
 func (e *encoder) EncodeSVG(b *octad.Board) error {
 	boardMap := b.SquareMap()

@@ -10,7 +10,7 @@ func (engine) CalcMoves(pos *Position, first bool) []*Move {
 }
 
 func (engine) Status(pos *Position) Method {
-	hasMove := false
+	var hasMove bool
 	if pos.validMoves != nil {
 		hasMove = len(pos.validMoves) > 0
 	} else {

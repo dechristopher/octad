@@ -33,10 +33,9 @@ Each player begins with four pieces: a knight, their king, and two pawns placed
 in that order from left to right relative to them. An example of this can be
 seen in the board diagrams below:
 
-![Octad board](doc/octad1.svg "Octad board")
-![Octad board](doc/octad2.svg "1. c2")
-![Octad board](doc/octad3.svg "1. c2 b3")
-![Octad board](doc/octad4.svg "1. c2 b3 2. cxb3! ...")
+| Octad Board | 1. c2 | 1. c2 b3 | 1. c2 b3 2. cxb3! ... |
+| ----------- | ----- | -------- | --------------------- |
+| ![Octad board](doc/octad1.svg "Octad board") | ![Octad board](doc/octad2.svg "1. c2") | ![Octad board](doc/octad3.svg "1. c2 b3") | ![Octad board](doc/octad4.svg "1. c2 b3 2. cxb3! ...") |
 
 ### Rules
 All standard chess rules apply:

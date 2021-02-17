@@ -1,8 +1,8 @@
 package octad
 
 const (
-	numOfSquaresInBoard = 16
-	numOfSquaresInRow   = 4
+	squaresOnBoard = 16
+	squaresInRow   = 4
 )
 
 // A Square is one of the 16 rank and file combinations that make up a board.
@@ -10,19 +10,20 @@ type Square int8
 
 // File returns the square's file.
 func (sq Square) File() File {
-	return File(int(sq) % numOfSquaresInRow)
+	return File(int(sq) % squaresInRow)
 }
 
 // Rank returns the square's rank.
 func (sq Square) Rank() Rank {
-	return Rank(int(sq) / numOfSquaresInRow)
+	return Rank(int(sq) / squaresInRow)
 }
 
 func (sq Square) String() string {
 	return sq.File().String() + sq.Rank().String()
 }
 
-func (sq Square) color() Color {
+// Color returns the color of a given square
+func (sq Square) Color() Color {
 	if ((sq / 4) % 2) == (sq % 2) {
 		return Black
 	}
@@ -30,7 +31,7 @@ func (sq Square) color() Color {
 }
 
 func getSquare(f File, r Rank) Square {
-	return Square((int(r) * 8) + int(f))
+	return Square((int(r) * 4) + int(f))
 }
 
 const (

@@ -95,12 +95,12 @@ func PGN(r io.Reader) (func(*Game), error) {
 }
 
 // OFEN takes a string and returns a function that updates
-// the game to reflect the FEN data. Since FEN doesn't encode
+// the game to reflect the OFEN data. Since OFEN doesn't encode
 // prior moves, the move list will be empty. The returned
 // function is designed to be used in the NewGame constructor.
-// An error is returned if there is a problem parsing the FEN data.
-func OFEN(fen string) (func(*Game), error) {
-	pos, err := decodeOFEN(fen)
+// An error is returned if there is a problem parsing the OFEN data.
+func OFEN(ofen string) (func(*Game), error) {
+	pos, err := decodeOFEN(ofen)
 	if err != nil {
 		return nil, err
 	}
@@ -135,8 +135,11 @@ func UseNotation(n Notation) func(*Game) {
 // NewGame defaults to returning a game in the standard
 // opening position. Options can be given to configure
 // the game's initial state.
-func NewGame(options ...func(*Game)) *Game {
-	pos := StartingPosition()
+func NewGame(options ...func(*Game)) (*Game, error) {
+	pos, err := StartingPosition()
+	if err != nil {
+		return nil, err
+	}
 	game := &Game{
 		notation:  AlgebraicNotation{},
 		moves:     []*Move{},
@@ -150,7 +153,7 @@ func NewGame(options ...func(*Game)) *Game {
 			f(game)
 		}
 	}
-	return game
+	return game, nil
 }
 
 // Move updates the game with the given move. An error is returned

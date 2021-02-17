@@ -135,7 +135,10 @@ func decodePGN(pgn string) (*Game, error) {
 		}
 	}
 	gameFuncs = append(gameFuncs, TagPairs(tagPairs))
-	g := NewGame(gameFuncs...)
+	g, err := NewGame(gameFuncs...)
+	if err != nil {
+		return nil, err
+	}
 	g.ignoreAutomaticDraws = true
 	decoder := multiDecoder([]Decoder{AlgebraicNotation{}, LongAlgebraicNotation{}, UCINotation{}})
 	for _, alg := range moveStrs {

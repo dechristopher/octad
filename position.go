@@ -10,14 +10,17 @@ import (
 	"strings"
 )
 
-// Side represents a side of the board.
+// Side represents a side to castle to. In octad, there are three types of
+// castling allowed. Knight, close pawn, and far pawn
 type Side int
 
 const (
-	// KingSide is the right side of the board from white's perspective.
-	KingSide Side = iota + 1
-	// QueenSide is the left side of the board from white's perspective.
-	QueenSide
+	// KnightSide is castling with the knight
+	KnightSide Side = iota + 1
+	// CloseSide is castling with the close pawn
+	CloseSide
+	// FarSide is castling with the far pawn
+	FarSide
 )
 
 // CastleRights holds the state of both sides castling abilities.
@@ -26,9 +29,12 @@ type CastleRights string
 // CanCastle returns true if the given color and side combination
 // can castle, otherwise returns false.
 func (cr CastleRights) CanCastle(c Color, side Side) bool {
-	char := "k"
-	if side == QueenSide {
-		char = "q"
+	char := "n"
+	if side == CloseSide {
+		char = "c"
+	}
+	if side == FarSide {
+		char = "f"
 	}
 	if c == White {
 		char = strings.ToUpper(char)
@@ -37,12 +43,12 @@ func (cr CastleRights) CanCastle(c Color, side Side) bool {
 }
 
 // String implements the fmt.Stringer interface and returns
-// a FEN compatible string. Ex. KQq
+// a FEN compatible string. Ex. NCFncf
 func (cr CastleRights) String() string {
 	return string(cr)
 }
 
-// Position represents the state of the game without reguard
+// Position represents the state of the game without regard
 // to its outcome. Position is translatable to FEN notation.
 type Position struct {
 	board           *Board
@@ -60,10 +66,9 @@ const (
 )
 
 // StartingPosition returns the starting position
-// rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
-func StartingPosition() *Position {
-	pos, _ := decodeOFEN(startOFEN)
-	return pos
+// ppkn/4/4/NKPP w NCFncf - 0 1
+func StartingPosition() (*Position, error) {
+	return decodeOFEN(startOFEN)
 }
 
 // Update returns a new position resulting from the given move.
@@ -154,13 +159,13 @@ func (pos *Position) Hash() [16]byte {
 	return md5.Sum([]byte(s))
 }
 
-// MarshalText implements the encoding.TextMarshaler interface and
+// MarshalText implements the encoding.TextMarshaller interface and
 // encodes the position's OFEN.
 func (pos *Position) MarshalText() (text []byte, err error) {
 	return []byte(pos.String()), nil
 }
 
-// UnmarshalText implements the encoding.TextUnarshaler interface and
+// UnmarshalText implements the encoding.TextUnmarshaler interface and
 // assumes the data is in the OFEN format.
 func (pos *Position) UnmarshalText(text []byte) error {
 	cp, err := decodeOFEN(string(text))
@@ -203,16 +208,16 @@ func (pos *Position) MarshalBinary() (data []byte, err error) {
 		return nil, err
 	}
 	var b uint8
-	if pos.castleRights.CanCastle(White, KingSide) {
+	if pos.castleRights.CanCastle(White, KnightSide) {
 		b = b | bitsCastleWhiteKing
 	}
-	if pos.castleRights.CanCastle(White, QueenSide) {
+	if pos.castleRights.CanCastle(White, CloseSide) {
 		b = b | bitsCastleWhiteQueen
 	}
-	if pos.castleRights.CanCastle(Black, KingSide) {
+	if pos.castleRights.CanCastle(Black, KnightSide) {
 		b = b | bitsCastleBlackKing
 	}
-	if pos.castleRights.CanCastle(Black, QueenSide) {
+	if pos.castleRights.CanCastle(Black, CloseSide) {
 		b = b | bitsCastleBlackQueen
 	}
 	if pos.turn == Black {

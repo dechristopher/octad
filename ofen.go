@@ -15,7 +15,7 @@ func decodeOFEN(ofen string) (*Position, error) {
 	if len(parts) != 6 {
 		return nil, fmt.Errorf("octad: ofen invalid notiation %s must have 6 sections", ofen)
 	}
-	b, err := fenBoard(parts[0])
+	b, err := ofenBoard(parts[0])
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func decodeOFEN(ofen string) (*Position, error) {
 }
 
 // generates board from ofen format: ppkn/4/4/NKPP w NCFncf - 0 1
-func fenBoard(boardStr string) (*Board, error) {
+func ofenBoard(boardStr string) (*Board, error) {
 	rankStrs := strings.Split(boardStr, "/")
 	if len(rankStrs) != 4 {
 		return nil, fmt.Errorf("octad: ofen invalid board %s", boardStr)
@@ -95,7 +95,7 @@ func fenFormRank(rankStr string) (map[File]Piece, error) {
 
 func formCastleRights(castleStr string) (CastleRights, error) {
 	// check for duplicates aka. KKkq right now is valid
-	for _, s := range []string{"K", "Q", "k", "q", "-"} {
+	for _, s := range []string{"N", "C", "F", "n", "c", "f", "-"} {
 		if strings.Count(castleStr, s) > 1 {
 			return "-", fmt.Errorf("octad: ofen invalid castle rights %s", castleStr)
 		}
@@ -103,7 +103,7 @@ func formCastleRights(castleStr string) (CastleRights, error) {
 	for _, r := range castleStr {
 		c := fmt.Sprintf("%c", r)
 		switch c {
-		case "K", "Q", "k", "q", "-":
+		case "N", "C", "F", "n", "c", "f", "-":
 		default:
 			return "-", fmt.Errorf("octad: ofen invalid castle rights %s", castleStr)
 		}

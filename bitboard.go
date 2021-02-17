@@ -37,7 +37,8 @@ func (b bitboard) Mapping() map[Square]bool {
 	return m
 }
 
-// String returns a 64 character string of 1s and 0s starting with the most significant bit.
+// String returns a 64 character string of 1s and 0s starting with the most
+// significant bit.
 func (b bitboard) String() string {
 	s := strconv.FormatUint(uint64(b), 2)
 	return strings.Repeat("0", numOfSquaresInBoard-len(s)) + s
@@ -45,8 +46,8 @@ func (b bitboard) String() string {
 
 // Draw returns visual representation of the bitboard useful for debugging.
 func (b bitboard) Draw() string {
-	s := "\n A B C D E F G H\n"
-	for r := 7; r >= 0; r-- {
+	s := "\n A B C D\n"
+	for r := 3; r >= 0; r-- {
 		s += Rank(r).String()
 		for f := 0; f < numOfSquaresInRow; f++ {
 			sq := getSquare(File(f), Rank(r))
@@ -64,10 +65,10 @@ func (b bitboard) Draw() string {
 
 // Reverse returns a bitboard where the bit order is reversed.
 func (b bitboard) Reverse() bitboard {
-	return bitboard(bits.Reverse64(uint64(b)))
+	return bitboard(bits.Reverse16(uint16(b)))
 }
 
 // Occupied returns true if the square's bitboard position is 1.
 func (b bitboard) Occupied(sq Square) bool {
-	return (bits.RotateLeft64(uint64(b), int(sq)+1) & 1) == 1
+	return (bits.RotateLeft16(uint16(b), int(sq)+1) & 1) == 1
 }

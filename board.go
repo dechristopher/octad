@@ -49,7 +49,7 @@ func NewBoard(m map[Square]Piece) *Board {
 // SquareMap returns a mapping of squares to pieces. A square is only added to the map if it is occupied.
 func (b *Board) SquareMap() map[Square]Piece {
 	m := map[Square]Piece{}
-	for sq := 0; sq < numOfSquaresInBoard; sq++ {
+	for sq := 0; sq < squaresOnBoard; sq++ {
 		p := b.Piece(Square(sq))
 		if p != NoPiece {
 			m[Square(sq)] = p
@@ -77,7 +77,7 @@ const (
 // center line.
 func (b *Board) Flip(fd FlipDirection) *Board {
 	m := map[Square]Piece{}
-	for sq := 0; sq < numOfSquaresInBoard; sq++ {
+	for sq := 0; sq < squaresOnBoard; sq++ {
 		var mv Square
 		switch fd {
 		case UpDown:
@@ -97,7 +97,7 @@ func (b *Board) Flip(fd FlipDirection) *Board {
 // Transpose flips the board over the A8 to H1 diagonal.
 func (b *Board) Transpose() *Board {
 	m := map[Square]Piece{}
-	for sq := 0; sq < numOfSquaresInBoard; sq++ {
+	for sq := 0; sq < squaresOnBoard; sq++ {
 		file := File(3 - Square(sq).Rank())
 		rank := Rank(3 - Square(sq).File())
 		mv := getSquare(file, rank)
@@ -111,7 +111,7 @@ func (b *Board) Draw() string {
 	s := "\n A B C D\n"
 	for r := 3; r >= 0; r-- {
 		s += Rank(r).String()
-		for f := 0; f < numOfSquaresInRow; f++ {
+		for f := 0; f < squaresInRow; f++ {
 			p := b.Piece(getSquare(File(f), Rank(r)))
 			if p == NoPiece {
 				s += "-"
@@ -126,11 +126,11 @@ func (b *Board) Draw() string {
 }
 
 // String implements the fmt.Stringer interface and returns
-// a string in the OFEN board format: ppkn/4/4/NKPP w NCFncf
+// a string in the OFEN board format: ppkn/4/4/NKPP
 func (b *Board) String() string {
 	fen := ""
-	for r := 7; r >= 0; r-- {
-		for f := 0; f < numOfSquaresInRow; f++ {
+	for r := 3; r >= 0; r-- {
+		for f := 0; f < squaresInRow; f++ {
 			sq := getSquare(File(f), Rank(r))
 			p := b.Piece(sq)
 			if p != NoPiece {
@@ -143,7 +143,7 @@ func (b *Board) String() string {
 			fen += "/"
 		}
 	}
-	for i := 8; i > 1; i-- {
+	for i := 4; i > 1; i-- {
 		repeatStr := strings.Repeat("1", i)
 		countStr := strconv.Itoa(i)
 		fen = strings.Replace(fen, repeatStr, countStr, -1)
@@ -171,7 +171,7 @@ func (b *Board) MarshalText() (text []byte, err error) {
 // UnmarshalText implements the encoding.TextUnarshaler interface and takes
 // a string in the OFEN board format: ppkn/4/4/NKPP
 func (b *Board) UnmarshalText(text []byte) error {
-	cp, err := fenBoard(string(text))
+	cp, err := ofenBoard(string(text))
 	if err != nil {
 		return err
 	}
@@ -273,7 +273,7 @@ func (b *Board) calcConvenienceBBs(m *Move) {
 		b.whiteKingSq = NoSquare
 		b.blackKingSq = NoSquare
 
-		for sq := 0; sq < numOfSquaresInBoard; sq++ {
+		for sq := 0; sq < squaresOnBoard; sq++ {
 			sqr := Square(sq)
 			if b.bbWhiteKing.Occupied(sqr) {
 				b.whiteKingSq = sqr
@@ -347,7 +347,7 @@ func (b *Board) hasSufficientMaterial() bool {
 		blackCount := 0
 		for sq, p := range pieceMap {
 			if p.Type() == Bishop {
-				switch sq.color() {
+				switch sq.Color() {
 				case White:
 					whiteCount++
 				case Black:

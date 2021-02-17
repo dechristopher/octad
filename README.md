@@ -1,11 +1,17 @@
 # octad
-Standard library for the Octad chess variant written in Go.
+[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/dechristopher/octad)
+[![Go Report Card](https://goreportcard.com/badge/notnil/chess)](https://goreportcard.com/report/dechristopher/octad)
+[![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/dechristopher/octad/master/LICENSE)
 
-Octad is a creation of Andrew DeChristopher. Rules and information about the
-game can be found below. Octad is thought to be a deterministic game but needs
-formal verification to prove that.
+**octad** is a set of go packages which provide common octad chess variant
+utilities such as move generation, turn management, checkmate detection,
+a basic engine, PGN encoding, image generation, and others.
 
 ## Octad Game
+Octad was conceived by Andrew DeChristopher in 2018. Rules and information about
+the game can be found below. Octad is thought to be a solved, deterministic game
+but needs formal verification to prove that.
+
 ### Board Layout
 Each player begins with four pieces, a knight, their king, and two pawns placed
 in that order. An example of this can be seen in the board diagram below:

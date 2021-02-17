@@ -13,7 +13,7 @@ type bitboard uint16
 
 func newBitboard(m map[Square]bool) bitboard {
 	s := ""
-	for sq := 0; sq < numOfSquaresInBoard; sq++ {
+	for sq := 0; sq < squaresOnBoard; sq++ {
 		if m[Square(sq)] {
 			s += "1"
 		} else {
@@ -29,7 +29,7 @@ func newBitboard(m map[Square]bool) bitboard {
 
 func (b bitboard) Mapping() map[Square]bool {
 	m := map[Square]bool{}
-	for sq := 0; sq < numOfSquaresInBoard; sq++ {
+	for sq := 0; sq < squaresOnBoard; sq++ {
 		if b&bbForSquare(Square(sq)) > 0 {
 			m[Square(sq)] = true
 		}
@@ -41,7 +41,7 @@ func (b bitboard) Mapping() map[Square]bool {
 // significant bit.
 func (b bitboard) String() string {
 	s := strconv.FormatUint(uint64(b), 2)
-	return strings.Repeat("0", numOfSquaresInBoard-len(s)) + s
+	return strings.Repeat("0", squaresOnBoard-len(s)) + s
 }
 
 // Draw returns visual representation of the bitboard useful for debugging.
@@ -49,7 +49,7 @@ func (b bitboard) Draw() string {
 	s := "\n A B C D\n"
 	for r := 3; r >= 0; r-- {
 		s += Rank(r).String()
-		for f := 0; f < numOfSquaresInRow; f++ {
+		for f := 0; f < squaresInRow; f++ {
 			sq := getSquare(File(f), Rank(r))
 			if b.Occupied(sq) {
 				s += "1"

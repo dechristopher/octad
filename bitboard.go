@@ -20,7 +20,7 @@ func newBitboard(m map[Square]bool) bitboard {
 			s += "0"
 		}
 	}
-	bb, err := strconv.ParseUint(s, 2, 64)
+	bb, err := strconv.ParseUint(s, 2, 16)
 	if err != nil {
 		panic(err)
 	}

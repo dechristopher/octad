@@ -41,7 +41,7 @@ seen in the board diagrams below:
 ### Rules
 All standard chess rules apply:
 
-* En Passant is possible
+* En passant is allowed
 * Pawn promotion to any piece
 * Stalemates are a draw
 

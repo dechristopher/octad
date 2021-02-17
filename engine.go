@@ -34,7 +34,7 @@ func standardMoves(pos *Position, first bool) []*Move {
 	if pos.Turn() == Black {
 		bbAllowed = ^pos.board.blackSqs
 	}
-	moves := []*Move{}
+	var moves []*Move
 	// iterate through pieces to find possible moves
 	for _, p := range allPieces {
 		if pos.Turn() != p.Color() {
@@ -202,49 +202,71 @@ func bbForPossibleMoves(pos *Position, pt PieceType, sq Square) bitboard {
 
 // TODO can calc isInCheck twice
 func castleMoves(pos *Position) []*Move {
-	moves := []*Move{}
-	//kingSide := pos.castleRights.CanCastle(pos.Turn(), KnightSide)
-	//queenSide := pos.castleRights.CanCastle(pos.Turn(), CloseSide)
-	//// white king side
-	//if pos.turn == White && kingSide &&
-	//	(^pos.board.emptySqs&(bbForSquare(F1)|bbForSquare(G1))) == 0 &&
-	//	!squaresAreAttacked(pos, F1, G1) &&
-	//	!pos.inCheck {
-	//	m := &Move{s1: E1, s2: G1}
-	//	m.addTag(KingSideCastle)
-	//	addTags(m, pos)
-	//	moves = append(moves, m)
-	//}
-	//// white queen side
-	//if pos.turn == White && queenSide &&
-	//	(^pos.board.emptySqs&(bbForSquare(B1)|bbForSquare(C1)|bbForSquare(D1))) == 0 &&
-	//	!squaresAreAttacked(pos, C1, D1) &&
-	//	!pos.inCheck {
-	//	m := &Move{s1: E1, s2: C1}
-	//	m.addTag(QueenSideCastle)
-	//	addTags(m, pos)
-	//	moves = append(moves, m)
-	//}
-	//// black king side
-	//if pos.turn == Black && kingSide &&
-	//	(^pos.board.emptySqs&(bbForSquare(F8)|bbForSquare(G8))) == 0 &&
-	//	!squaresAreAttacked(pos, F8, G8) &&
-	//	!pos.inCheck {
-	//	m := &Move{s1: E8, s2: G8}
-	//	m.addTag(KingSideCastle)
-	//	addTags(m, pos)
-	//	moves = append(moves, m)
-	//}
-	//// black queen side
-	//if pos.turn == Black && queenSide &&
-	//	(^pos.board.emptySqs&(bbForSquare(B8)|bbForSquare(C8)|bbForSquare(D8))) == 0 &&
-	//	!squaresAreAttacked(pos, C8, D8) &&
-	//	!pos.inCheck {
-	//	m := &Move{s1: E8, s2: C8}
-	//	m.addTag(QueenSideCastle)
-	//	addTags(m, pos)
-	//	moves = append(moves, m)
-	//}
+	var moves []*Move
+
+	knightSide := pos.castleRights.CanCastle(pos.Turn(), KnightSide)
+	closeSide := pos.castleRights.CanCastle(pos.Turn(), CloseSide)
+	farSide := pos.castleRights.CanCastle(pos.Turn(), FarSide)
+
+	if pos.turn == White {
+		// white knight side
+		if knightSide &&
+			!squaresAreAttacked(pos, A1) &&
+			!pos.inCheck {
+			m := &Move{s1: B1, s2: A1}
+			m.addTag(KnightCastle)
+			addTags(m, pos)
+			moves = append(moves, m)
+		}
+		// white far side
+		if farSide &&
+			(^pos.board.emptySqs&(bbForSquare(C1))) == 0 &&
+			!squaresAreAttacked(pos, C1) &&
+			!pos.inCheck {
+			m := &Move{s1: B1, s2: C1}
+			m.addTag(FarPawnCastle)
+			addTags(m, pos)
+			moves = append(moves, m)
+		}
+		// white close side
+		if closeSide &&
+			!squaresAreAttacked(pos, C1) &&
+			!pos.inCheck {
+			m := &Move{s1: B1, s2: C1}
+			m.addTag(ClosePawnCastle)
+			addTags(m, pos)
+			moves = append(moves, m)
+		}
+	} else {
+		// black knight side
+		if knightSide &&
+			!squaresAreAttacked(pos, D4) &&
+			!pos.inCheck {
+			m := &Move{s1: C4, s2: D4}
+			m.addTag(KnightCastle)
+			addTags(m, pos)
+			moves = append(moves, m)
+		}
+		// black far side
+		if farSide &&
+			(^pos.board.emptySqs&(bbForSquare(B4))) == 0 &&
+			!squaresAreAttacked(pos, B4) &&
+			!pos.inCheck {
+			m := &Move{s1: C4, s2: B4}
+			m.addTag(FarPawnCastle)
+			addTags(m, pos)
+			moves = append(moves, m)
+		}
+		// black close side
+		if closeSide &&
+			!squaresAreAttacked(pos, B4) &&
+			!pos.inCheck {
+			m := &Move{s1: C4, s2: B4}
+			m.addTag(ClosePawnCastle)
+			addTags(m, pos)
+			moves = append(moves, m)
+		}
+	}
 	return moves
 }
 
@@ -254,6 +276,7 @@ func pawnMoves(pos *Position, sq Square) bitboard {
 	if pos.enPassantSquare != NoSquare {
 		bbEnPassant = bbForSquare(pos.enPassantSquare)
 	}
+
 	if pos.Turn() == White {
 		capRight := ((bb & ^bbFileD & ^bbRank4) >> 5) & (pos.board.blackSqs | bbEnPassant)
 		capLeft := ((bb & ^bbFileA & ^bbRank4) >> 3) & (pos.board.blackSqs | bbEnPassant)
@@ -261,6 +284,7 @@ func pawnMoves(pos *Position, sq Square) bitboard {
 		upTwo := ((upOne & bbRank2) >> 4) & pos.board.emptySqs
 		return capRight | capLeft | upOne | upTwo
 	}
+
 	capRight := ((bb & ^bbFileD & ^bbRank1) << 3) & (pos.board.whiteSqs | bbEnPassant)
 	capLeft := ((bb & ^bbFileA & ^bbRank1) << 5) & (pos.board.whiteSqs | bbEnPassant)
 	upOne := ((bb & ^bbRank1) << 4) & pos.board.emptySqs

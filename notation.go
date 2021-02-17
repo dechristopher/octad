@@ -70,14 +70,19 @@ func (UCINotation) Decode(pos *Position, s string) (*Move, error) {
 		return m, nil
 	}
 	p := pos.Board().Piece(s1)
-	//if p.Type() == King {
-	//	if (s1 == E1 && s2 == G1) || (s1 == E8 && s2 == G8) {
-	//		m.addTag(KingSideCastle)
-	//	} else if (s1 == E1 && s2 == C1) || (s1 == E8 && s2 == C8) {
-	//		m.addTag(QueenSideCastle)
-	//	}
-	//} else
-	if p.Type() == Pawn && s2 == pos.enPassantSquare {
+	p2 := pos.Board().Piece(s2)
+	// TODO formally verify this decoding
+	// TODO make sure piece destinations and criteria make sense
+	if p.Type() == King {
+		if ((s1 == B1 && s2 == A1) || (s1 == C4 && s2 == D4)) && p2.Type() == Knight && p.Color() == p2.Color() {
+			m.addTag(KnightCastle)
+		} else if ((s1 == B1 && s2 == C1) || (s1 == C4 && s2 == B4)) && p2.Type() == Pawn && p.Color() == p2.Color() {
+			m.addTag(ClosePawnCastle)
+		} else if ((s1 == B1 && s2 == D1) || (s1 == C4 && s2 == A4)) && p2.Type() == Pawn && p.Color() == p2.Color() {
+			m.addTag(FarPawnCastle)
+			fmt.Println("FAR PAWN CASTLE")
+		}
+	} else if p.Type() == Pawn && s2 == pos.enPassantSquare {
 		m.addTag(EnPassant)
 		m.addTag(Capture)
 	}
@@ -103,9 +108,11 @@ func (AlgebraicNotation) String() string {
 // Encode implements the Encoder interface.
 func (AlgebraicNotation) Encode(pos *Position, m *Move) string {
 	checkChar := getCheckChar(pos, m)
-	if m.HasTag(KingSideCastle) {
+	if m.HasTag(KnightCastle) {
+		return "O" + checkChar
+	} else if m.HasTag(ClosePawnCastle) {
 		return "O-O" + checkChar
-	} else if m.HasTag(QueenSideCastle) {
+	} else if m.HasTag(FarPawnCastle) {
 		return "O-O-O" + checkChar
 	}
 	p := pos.Board().Piece(m.S1())
@@ -150,9 +157,11 @@ func (LongAlgebraicNotation) String() string {
 // Encode implements the Encoder interface.
 func (LongAlgebraicNotation) Encode(pos *Position, m *Move) string {
 	checkChar := getCheckChar(pos, m)
-	if m.HasTag(KingSideCastle) {
+	if m.HasTag(KnightCastle) {
+		return "O" + checkChar
+	} else if m.HasTag(ClosePawnCastle) {
 		return "O-O" + checkChar
-	} else if m.HasTag(QueenSideCastle) {
+	} else if m.HasTag(FarPawnCastle) {
 		return "O-O-O" + checkChar
 	}
 	p := pos.Board().Piece(m.S1())

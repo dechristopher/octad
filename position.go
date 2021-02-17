@@ -122,6 +122,11 @@ func (pos *Position) Board() *Board {
 	return pos.board
 }
 
+// Board returns the position's active en passant square if any.
+func (pos *Position) EnPassantSquare() Square {
+	return pos.enPassantSquare
+}
+
 // Turn returns the color to move next.
 func (pos *Position) Turn() Color {
 	return pos.turn
@@ -191,7 +196,7 @@ const (
 	bitsHasEnPassant
 )
 
-// MarshalBinary implements the encoding.BinaryMarshaler interface
+// MarshalBinary implements the encoding.BinaryMarshaller interface
 func (pos *Position) MarshalBinary() (data []byte, err error) {
 	boardBytes, err := pos.board.MarshalBinary()
 	if err != nil {
@@ -232,7 +237,7 @@ func (pos *Position) MarshalBinary() (data []byte, err error) {
 	return buf.Bytes(), err
 }
 
-// UnmarshalBinary implements the encoding.BinaryMarshaler interface
+// UnmarshalBinary implements the encoding.BinaryMarshaller interface
 func (pos *Position) UnmarshalBinary(data []byte) error {
 	if len(data) != 101 {
 		return errors.New("octad: position binary data should consist of 101 bytes")
@@ -301,23 +306,29 @@ func (pos *Position) copy() *Position {
 
 func (pos *Position) updateCastleRights(m *Move) CastleRights {
 	cr := string(pos.castleRights)
-	// TODO castling for octad
-	//p := pos.board.Piece(m.s1)
-	//if p == WhiteKing || m.s1 == H1 || m.s2 == H1 {
-	//	cr = strings.Replace(cr, "K", "", -1)
-	//}
-	//if p == WhiteKing || m.s1 == A1 || m.s2 == A1 {
-	//	cr = strings.Replace(cr, "Q", "", -1)
-	//}
-	//if p == BlackKing || m.s1 == H8 || m.s2 == H8 {
-	//	cr = strings.Replace(cr, "k", "", -1)
-	//}
-	//if p == BlackKing || m.s1 == A8 || m.s2 == A8 {
-	//	cr = strings.Replace(cr, "q", "", -1)
-	//}
-	//if cr == "" {
-	//	cr = "-"
-	//}
+	// TODO formally verify these criteria
+	p := pos.board.Piece(m.s1)
+	if p == WhiteKing || m.s1 == A1 || m.s2 == A1 {
+		cr = strings.Replace(cr, "N", "", -1)
+	}
+	if p == WhiteKing || m.s1 == C1 || m.s2 == C1 {
+		cr = strings.Replace(cr, "C", "", -1)
+	}
+	if p == WhiteKing || m.s1 == D1 || m.s2 == D1 {
+		cr = strings.Replace(cr, "F", "", -1)
+	}
+	if p == BlackKing || m.s1 == D4 || m.s2 == D4 {
+		cr = strings.Replace(cr, "n", "", -1)
+	}
+	if p == BlackKing || m.s1 == B4 || m.s2 == B4 {
+		cr = strings.Replace(cr, "c", "", -1)
+	}
+	if p == BlackKing || m.s1 == A4 || m.s2 == A4 {
+		cr = strings.Replace(cr, "f", "", -1)
+	}
+	if cr == "" {
+		cr = "-"
+	}
 	return CastleRights(cr)
 }
 
@@ -327,12 +338,12 @@ func (pos *Position) updateEnPassantSquare(m *Move) Square {
 		return NoSquare
 	}
 	if pos.turn == White &&
-		(bbForSquare(m.s1)&bbRank2) != 0 &&
-		(bbForSquare(m.s2)&bbRank2) != 0 {
+		(bbForSquare(m.s1)&bbRank1) != 0 &&
+		(bbForSquare(m.s2)&bbRank3) != 0 {
 		return m.s2 - 4
 	} else if pos.turn == Black &&
-		(bbForSquare(m.s1)&bbRank3) != 0 &&
-		(bbForSquare(m.s2)&bbRank3) != 0 {
+		(bbForSquare(m.s1)&bbRank4) != 0 &&
+		(bbForSquare(m.s2)&bbRank2) != 0 {
 		return m.s2 + 4
 	}
 	return NoSquare

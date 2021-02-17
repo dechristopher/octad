@@ -162,13 +162,13 @@ func (b *Board) Piece(sq Square) Piece {
 	return NoPiece
 }
 
-// MarshalText implements the encoding.TextMarshaler interface and returns
+// MarshalText implements the encoding.TextMarshaller interface and returns
 // a string in the OFEN board format: ppkn/4/4/NKPP
 func (b *Board) MarshalText() (text []byte, err error) {
 	return []byte(b.String()), nil
 }
 
-// UnmarshalText implements the encoding.TextUnarshaler interface and takes
+// UnmarshalText implements the encoding.TextUnmarshaller interface and takes
 // a string in the OFEN board format: ppkn/4/4/NKPP
 func (b *Board) UnmarshalText(text []byte) error {
 	cp, err := ofenBoard(string(text))
@@ -179,8 +179,8 @@ func (b *Board) UnmarshalText(text []byte) error {
 	return nil
 }
 
-// MarshalBinary implements the encoding.BinaryMarshaler interface and returns
-// the bitboard representations as a array of bytes. Bitboads are encoded
+// MarshalBinary implements the encoding.BinaryMarshaller interface and returns
+// the bitboard representations as a array of bytes. Bitboards are encoded
 // in the following order: WhiteKing, WhiteQueen, WhiteRook, WhiteBishop, WhiteKnight
 // WhitePawn, BlackKing, BlackQueen, BlackRook, BlackBishop, BlackKnight, BlackPawn
 func (b *Board) MarshalBinary() (data []byte, err error) {
@@ -192,7 +192,7 @@ func (b *Board) MarshalBinary() (data []byte, err error) {
 }
 
 // UnmarshalBinary implements the encoding.BinaryUnmarshaler interface and parses
-// the bitboard representations as a array of bytes. Bitboads are decoded
+// the bitboard representations as a array of bytes. Bitboards are decoded
 // in the following order: WhiteKing, WhiteQueen, WhiteRook, WhiteBishop, WhiteKnight
 // WhitePawn, BlackKing, BlackQueen, BlackRook, BlackBishop, BlackKnight, BlackPawn
 func (b *Board) UnmarshalBinary(data []byte) error {
@@ -244,21 +244,25 @@ func (b *Board) update(m *Move) {
 	// remove captured en passant piece
 	if m.HasTag(EnPassant) {
 		if p1.Color() == White {
-			b.bbBlackPawn = ^(bbForSquare(m.s2) << 8) & b.bbBlackPawn
+			b.bbBlackPawn = ^(bbForSquare(m.s2) << 4) & b.bbBlackPawn
 		} else {
-			b.bbWhitePawn = ^(bbForSquare(m.s2) >> 8) & b.bbWhitePawn
+			b.bbWhitePawn = ^(bbForSquare(m.s2) >> 4) & b.bbWhitePawn
 		}
 	}
-	// move rook for castle
-	//if p1.Color() == White && m.HasTag(KingSideCastle) {
-	//	b.bbWhiteRook = (b.bbWhiteRook & ^bbForSquare(H1) | bbForSquare(F1))
-	//} else if p1.Color() == White && m.HasTag(QueenSideCastle) {
-	//	b.bbWhiteRook = (b.bbWhiteRook & ^bbForSquare(A1)) | bbForSquare(D1)
-	//} else if p1.Color() == Black && m.HasTag(KingSideCastle) {
-	//	b.bbBlackRook = (b.bbBlackRook & ^bbForSquare(H8) | bbForSquare(F8))
-	//} else if p1.Color() == Black && m.HasTag(QueenSideCastle) {
-	//	b.bbBlackRook = (b.bbBlackRook & ^bbForSquare(A8)) | bbForSquare(D8)
-	//}
+	// move pieces while castling
+	if p1.Color() == White && m.HasTag(KnightCastle) {
+		b.bbWhiteKnight = (b.bbWhiteKnight & ^bbForSquare(A1)) | bbForSquare(B1)
+	} else if p1.Color() == White && m.HasTag(ClosePawnCastle) {
+		b.bbWhitePawn = (b.bbWhitePawn & ^bbForSquare(C1)) | bbForSquare(B1)
+	} else if p1.Color() == White && m.HasTag(FarPawnCastle) {
+		b.bbWhitePawn = (b.bbWhitePawn & ^bbForSquare(D1)) | bbForSquare(B1)
+	} else if p1.Color() == Black && m.HasTag(KnightCastle) {
+		b.bbBlackKnight = (b.bbBlackKnight & ^bbForSquare(D4)) | bbForSquare(C4)
+	} else if p1.Color() == Black && m.HasTag(ClosePawnCastle) {
+		b.bbBlackPawn = (b.bbBlackPawn & ^bbForSquare(B4)) | bbForSquare(C4)
+	} else if p1.Color() == Black && m.HasTag(FarPawnCastle) {
+		b.bbBlackPawn = (b.bbBlackPawn & ^bbForSquare(A4)) | bbForSquare(C4)
+	}
 	b.calcConvenienceBBs(m)
 }
 

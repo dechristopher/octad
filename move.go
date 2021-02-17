@@ -4,10 +4,12 @@ package octad
 type MoveTag uint16
 
 const (
-	// KingSideCastle indicates that the move is a king side castle.
-	KingSideCastle MoveTag = 1 << iota
-	// QueenSideCastle indicates that the move is a queen side castle.
-	QueenSideCastle
+	// KnightCastle indicates that the move is a knight castle.
+	KnightCastle MoveTag = 1 << iota
+	// ClosePawnCastle indicates that the move is a close pawn castle.
+	ClosePawnCastle
+	// FarPawnCastle indicates that the move is a far pawn castle.
+	FarPawnCastle
 	// Capture indicates that the move captures a piece.
 	Capture
 	// EnPassant indicates that the move captures via en passant.

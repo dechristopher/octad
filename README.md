@@ -57,6 +57,6 @@ is what that would look like on the board:
 ![Octad board](doc/far-castle.svg "White after far pawn castling")
 
 #### Castling notation
-* Knight-color castle: **O**
+* Knight castle: **O**
 * Close pawn castle: **O-O**
 * Far pawn castle: **O-O-O**

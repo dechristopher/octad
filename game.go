@@ -225,13 +225,13 @@ func (g *Game) String() string {
 	return encodePGN(g)
 }
 
-// MarshalText implements the encoding.TextMarshaler interface and
+// MarshalText implements the encoding.TextMarshaller interface and
 // encodes the game's PGN.
 func (g *Game) MarshalText() (text []byte, err error) {
 	return []byte(encodePGN(g)), nil
 }
 
-// UnmarshalText implements the encoding.TextUnarshaler interface and
+// UnmarshalText implements the encoding.TextUnmarshaler interface and
 // assumes the data is in the PGN format.
 func (g *Game) UnmarshalText(text []byte) error {
 	game, err := decodePGN(string(text))

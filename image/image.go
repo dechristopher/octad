@@ -57,8 +57,8 @@ type encoder struct {
 func newEncoder(w io.Writer, options []func(*encoder)) *encoder {
 	e := &encoder{
 		w:     w,
-		light: color.RGBA{R: 235, G: 209, B: 166, A: 1},
-		dark:  color.RGBA{R: 165, G: 117, B: 81, A: 1},
+		light: color.RGBA{R: 255, G: 255, B: 223, A: 1},
+		dark:  color.RGBA{R: 147, G: 175, B: 108, A: 1},
 		marks: map[octad.Square]color.Color{},
 	}
 	for _, op := range options {
@@ -109,13 +109,13 @@ func (e *encoder) EncodeSVG(b *octad.Board) error {
 		// draw rank text on file A
 		txtColor := e.colorForText(sq)
 		if sq.File() == octad.FileA {
-			style := "font-size:11px;fill: " + colorToHex(txtColor)
-			canvas.Text(x+(sqWidth*1/20), y+(sqHeight*5/20), sq.Rank().String(), style)
+			style := "font-size:9px;fill: " + colorToHex(txtColor)
+			canvas.Text(x+(sqWidth*1/45), y+(sqHeight*5/24), sq.Rank().String(), style)
 		}
 		// draw file text on rank 1
 		if sq.Rank() == octad.Rank1 {
-			style := "text-anchor:end;font-size:11px;fill: " + colorToHex(txtColor)
-			canvas.Text(x+(sqWidth*19/20), y+sqHeight-(sqHeight*1/15), sq.File().String(), style)
+			style := "text-anchor:end;font-size:9px;fill: " + colorToHex(txtColor)
+			canvas.Text(x+(sqWidth*49/50), y+sqHeight-(sqHeight*1/40), sq.File().String(), style)
 		}
 	}
 	canvas.End()
@@ -153,7 +153,7 @@ func pieceXML(x, y int, p octad.Piece) string {
 	fileName := fmt.Sprintf("pieces/%s%s.svg", p.Color().String(), pieceTypeMap[p.Type()])
 	svgStr := string(internal.MustAsset(fileName))
 	old := `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="45" height="45">`
-	newSvgStr := fmt.Sprintf(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="360" height="360" viewBox="%d %d 360 360">`, (-1 * x), (-1 * y))
+	newSvgStr := fmt.Sprintf(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="360" height="360" viewBox="%d %d 360 360">`, -1*x, -1*y)
 	return strings.Replace(svgStr, old, newSvgStr, 1)
 }
 

@@ -1,7 +1,5 @@
 # image
 
-## Introduction
-
 **image** is an octad image utility that converts board positions into
 [SVG](https://en.wikipedia.org/wiki/Scalable_Vector_Graphics), or Scalable
 Vector Graphics, images.  [svgo](https://github.com/ajstarks/svgo), the only
@@ -43,8 +41,8 @@ It marks the given squares with the color. A possible usage includes marking
 squares of the previous move.
 
 ```go
-yellow := color.RGBA{R: 255, G: 255, B: 0, A: 1}
-mark := image.MarkSquares(yellow, octad.C1, octad.C2)
+blue := color.RGBA{R: 0, G: 64, B: 255, A: 1}
+mark := image.MarkSquares(blue, octad.C1, octad.C2)
 image.SVG(file, pos.Board(), mark)
 ```
 
@@ -78,8 +76,8 @@ func main() {
     }
 
     // write board SVG to file
-    yellow := color.RGBA{R: 255, G: 255, B: 0, A: 1}
-    mark := image.MarkSquares(yellow, octad.C1, octad.C2)
+    blue := color.RGBA{R: 0, G: 64, B: 255, A: 1}
+    mark := image.MarkSquares(blue, octad.C1, octad.C2)
     if err := image.SVG(f, pos.Board(), mark); err != nil {
         log.Fatal(err)
     }

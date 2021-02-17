@@ -13,7 +13,7 @@ import (
 	"github.com/dechristopher/octad"
 )
 
-const expectedMD5 = "44481de63ea7b587f37e791eb55a99aa"
+const expectedMD5 = "e9690f7d1403d7c2ce85212f8089127d"
 
 func TestSVG(t *testing.T) {
 	// create buffer of actual svg
@@ -23,7 +23,7 @@ func TestSVG(t *testing.T) {
 	if err := pos.UnmarshalText([]byte(fenStr)); err != nil {
 		t.Error(err)
 	}
-	mark := MarkSquares(color.RGBA{R: 255, G: 255, A: 1}, octad.C1, octad.C2)
+	mark := MarkSquares(color.RGBA{R: 0, G: 64, B: 255, A: 1}, octad.C1, octad.C2)
 	if err := SVG(buf, pos.Board(), mark); err != nil {
 		t.Error(err)
 	}

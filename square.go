@@ -35,23 +35,24 @@ func getSquare(f File, r Rank) Square {
 }
 
 const (
+	// NoSquare represents an invalid square
 	NoSquare Square = iota - 1
-	A1
-	B1
-	C1
-	D1
-	A2
-	B2
-	C2
-	D2
-	A3
-	B3
-	C3
-	D3
-	A4
-	B4
-	C4
-	D4
+	A1              // The A1 square, index 0
+	B1              // The B1 square, index 1
+	C1              // The C1 square, index 2
+	D1              // The D1 square, index 3
+	A2              // The A2 square, index 4
+	B2              // The B2 square, index 5
+	C2              // The C2 square, index 6
+	D2              // The D2 square, index 7
+	A3              // The A3 square, index 8
+	B3              // The B3 square, index 9
+	C3              // The C3 square, index 10
+	D3              // The D3 square, index 11
+	A4              // The A4 square, index 12
+	B4              // The B4 square, index 13
+	C4              // The C4 square, index 14
+	D4              // The D4 square, index 15
 )
 
 const (
@@ -63,10 +64,10 @@ const (
 type Rank int8
 
 const (
-	Rank1 Rank = iota
-	Rank2
-	Rank3
-	Rank4
+	Rank1 Rank = iota // Rank1 is the first rank, index 0
+	Rank2             // Rank2 is the second rank, index 1
+	Rank3             // Rank3 is the third rank, index 2
+	Rank4             // Rank4 is the fourth rank, index 3
 )
 
 func (r Rank) String() string {
@@ -77,10 +78,10 @@ func (r Rank) String() string {
 type File int8
 
 const (
-	FileA File = iota
-	FileB
-	FileC
-	FileD
+	FileA File = iota // FileA is the A file, index 0
+	FileB             // FileB is the B file, index 1
+	FileC             // FileC is the C file, index 2
+	FileD             // FileD is the D file, index 3
 )
 
 func (f File) String() string {

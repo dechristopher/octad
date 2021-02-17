@@ -251,7 +251,7 @@ func (g *Game) UnmarshalText(text []byte) error {
 func (g *Game) Draw(method Method) error {
 	switch method {
 	case ThreefoldRepetition:
-		if g.numOfRepitions() < 3 {
+		if g.numRepetitions() < 3 {
 			return errors.New("octad: draw by ThreefoldRepetition requires at least three repetitions of the current board state")
 		}
 	case FiftyMoveRule:
@@ -284,7 +284,7 @@ func (g *Game) Resign(color Color) {
 // EligibleDraws returns valid inputs for the Draw() method.
 func (g *Game) EligibleDraws() []Method {
 	draws := []Method{DrawOffer}
-	if g.numOfRepitions() >= 3 {
+	if g.numRepetitions() >= 3 {
 		draws = append(draws, ThreefoldRepetition)
 	}
 	if g.pos.halfMoveClock >= 100 {
@@ -350,7 +350,7 @@ func (g *Game) updatePosition() {
 	}
 
 	// five fold rep creates automatic draw
-	if !g.ignoreAutomaticDraws && g.numOfRepitions() >= 5 {
+	if !g.ignoreAutomaticDraws && g.numRepetitions() >= 5 {
 		g.outcome = Draw
 		g.method = FivefoldRepetition
 	}
@@ -377,6 +377,7 @@ func (g *Game) copy(game *Game) {
 	g.method = game.method
 }
 
+// Clone returns a duplicate instance of the current game
 func (g *Game) Clone() *Game {
 	return &Game{
 		tagPairs:  g.TagPairs(),
@@ -389,7 +390,7 @@ func (g *Game) Clone() *Game {
 	}
 }
 
-func (g *Game) numOfRepitions() int {
+func (g *Game) numRepetitions() int {
 	count := 0
 	for _, pos := range g.Positions() {
 		if g.pos.samePosition(pos) {

@@ -1,0 +1,64 @@
+Octad Binary Bitboard Representation and Memory Allocation
+
+Bitboard:
+
+    0 0 0 0 msb
+    0 0 0 0
+    0 0 0 0
+lsb 0 0 0 0
+
+    BYTE  1           BYTE  2
+0 0 0 0 0 0 0 0 | 0 0 0 0 0 0 0 0   = uint16 (Java short primitive)
+^                               ^
+a1                              d4
+
+---
+
+Memory Usage: (figures for Java)
+
+* 18 bitboards required to store Octad game position and state
+	- 288 bits / 36 bytes
+
+* 1 short for any available en passant square
+	- 16 bits / 2 bytes
+
+* 2 booleans for king in check status
+	- 16 bytes each (yuck)
+	- 32 bytes total
+
+* 1 short per color for castling availability
+	- Octad has O, O-O, and O-O-O
+	- this method requires bitwise operations to check individual castling availabilities but can be zero checked for castling availability altogether
+	- store castling availability in a movement bitboard only covering A1,B1,C1 / D4,C4,B4 respectively that can be used as individual booleans for each of the three castling types
+	- 16 bits / 2 bytes each
+	- 32 bits / 4 bytes total
+
+Total: 592 bits / 74 bytes
+
+---
+
+White Knight on A1                                 Black Knight on D4
+
+0 0 0 0     0 0 0 0     0 0 0 0                    0 0 0 1     0 0 0 0     0 0 0 0
+0 0 0 0     0 1 0 0     0 1 0 0                    0 0 0 0     0 1 0 0     0 1 0 0
+0 0 0 0     0 0 1 0     0 0 1 0                    0 0 0 0     0 0 1 0     0 0 1 0
+1 0 0 0     0 0 0 0     0 0 0 0                    0 0 0 0     0 0 0 0     0 0 0 0
+position    attack      movement                   position    attack      movement
+
+
+White King on B1                                   Black King on C4
+
+0 0 0 0     0 0 0 0     0 0 0 0                    0 0 1 0     0 1 0 1     0 1 0 1
+0 0 0 0     0 0 0 0     0 0 0 0                    0 0 0 0     0 1 1 1     0 0 1 1
+0 0 0 0     1 1 1 0     1 1 0 0                    0 0 0 0     0 0 0 0     0 0 0 0
+0 1 0 0     1 0 1 0     1 0 1 0                    0 0 0 0     0 0 0 0     0 0 0 0
+position    attack      movement                   position    attack      movement
+
+
+White Pawns                                        Black Pawns
+
+0 0 0 0	    0 0 0 0     0 0 0 0                    1 1 0 0     0 0 0 0     0 0 0 0
+0 0 0 0     0 0 0 0     0 0 1 1                    0 0 0 0     1 1 1 0     1 1 0 0
+0 0 0 0     0 1 1 1     0 0 1 1                    0 0 0 0     0 0 0 0     1 1 0 0
+0 0 1 1     0 0 0 0     0 0 0 0                    0 0 0 0     0 0 0 0     0 0 0 0
+position    attack      movement                   position    attack      movement

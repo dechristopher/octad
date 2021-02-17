@@ -16,7 +16,7 @@ a basic engine, PGN encoding, image generation, and others.
 
 ## Installation
 
-**chess** can be installed using "go get".
+**octad** can be installed using "go get".
 
 ```bash
 go get -u github.com/dechristopher/octad

@@ -188,10 +188,12 @@ func (pos *Position) UnmarshalText(text []byte) error {
 }
 
 const (
-	bitsCastleWhiteKing uint8 = 1 << iota
-	bitsCastleWhiteQueen
-	bitsCastleBlackKing
-	bitsCastleBlackQueen
+	bitsCastleWhiteKnight uint8 = 1 << iota
+	bitsCastleWhiteClose
+	bitsCastleWhiteFar
+	bitsCastleBlackKnight
+	bitsCastleBlackClose
+	bitsCastleBlackFar
 	bitsTurn
 	bitsHasEnPassant
 )
@@ -214,16 +216,22 @@ func (pos *Position) MarshalBinary() (data []byte, err error) {
 	}
 	var b uint8
 	if pos.castleRights.CanCastle(White, KnightSide) {
-		b = b | bitsCastleWhiteKing
+		b = b | bitsCastleWhiteKnight
 	}
 	if pos.castleRights.CanCastle(White, CloseSide) {
-		b = b | bitsCastleWhiteQueen
+		b = b | bitsCastleWhiteClose
+	}
+	if pos.castleRights.CanCastle(White, FarSide) {
+		b = b | bitsCastleWhiteFar
 	}
 	if pos.castleRights.CanCastle(Black, KnightSide) {
-		b = b | bitsCastleBlackKing
+		b = b | bitsCastleBlackKnight
 	}
 	if pos.castleRights.CanCastle(Black, CloseSide) {
-		b = b | bitsCastleBlackQueen
+		b = b | bitsCastleBlackClose
+	}
+	if pos.castleRights.CanCastle(Black, FarSide) {
+		b = b | bitsCastleBlackFar
 	}
 	if pos.turn == Black {
 		b = b | bitsTurn
@@ -239,15 +247,15 @@ func (pos *Position) MarshalBinary() (data []byte, err error) {
 
 // UnmarshalBinary implements the encoding.BinaryMarshaller interface
 func (pos *Position) UnmarshalBinary(data []byte) error {
-	if len(data) != 101 {
-		return errors.New("octad: position binary data should consist of 101 bytes")
+	if len(data) != 29 {
+		return errors.New("octad: position binary data should consist of 29 bytes")
 	}
 	board := &Board{}
-	if err := board.UnmarshalBinary(data[:96]); err != nil {
+	if err := board.UnmarshalBinary(data[:24]); err != nil {
 		return err
 	}
 	pos.board = board
-	buf := bytes.NewBuffer(data[96:])
+	buf := bytes.NewBuffer(data[24:])
 	halfMove := uint8(pos.halfMoveClock)
 	if err := binary.Read(buf, binary.BigEndian, &halfMove); err != nil {
 		return err
@@ -267,17 +275,23 @@ func (pos *Position) UnmarshalBinary(data []byte) error {
 	}
 	pos.castleRights = ""
 	pos.turn = White
-	if b&bitsCastleWhiteKing != 0 {
-		pos.castleRights += "K"
+	if b&bitsCastleWhiteKnight != 0 {
+		pos.castleRights += "N"
 	}
-	if b&bitsCastleWhiteQueen != 0 {
-		pos.castleRights += "Q"
+	if b&bitsCastleWhiteClose != 0 {
+		pos.castleRights += "C"
 	}
-	if b&bitsCastleBlackKing != 0 {
-		pos.castleRights += "k"
+	if b&bitsCastleWhiteFar != 0 {
+		pos.castleRights += "F"
 	}
-	if b&bitsCastleBlackQueen != 0 {
-		pos.castleRights += "q"
+	if b&bitsCastleBlackKnight != 0 {
+		pos.castleRights += "n"
+	}
+	if b&bitsCastleBlackClose != 0 {
+		pos.castleRights += "c"
+	}
+	if b&bitsCastleBlackFar != 0 {
+		pos.castleRights += "f"
 	}
 	if pos.castleRights == "" {
 		pos.castleRights = "-"

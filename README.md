@@ -9,7 +9,7 @@ a basic engine, PGN encoding, image generation, and others.
 
 ## Repo Structure
 
-| Package    | Docs Link                                    | Description                                                                             |
+| Package    | Docs Link | Description |
 | ---------- | -------------------------------------------- | --------------------------------------------------------------------------------------- |
 | **octad**  | [dechristopher/octad](README.md)             | Move generation, serialization / deserialization, turn management, checkmate detection  |
 | **image**  | [dechristopher/octad/image](image/README.md) | SVG octad board image generation                                                        |
@@ -55,10 +55,14 @@ is what that would look like on the board:
 
 ![Octad board](doc/far-castle.svg "White after far pawn castling")
 
-#### Castling notation
+#### Castling Notation
 * Knight castle: **O**
 * Close pawn castle: **O-O**
 * Far pawn castle: **O-O-O**
+
+### OFEN Notation
+OFEN is a derivation of FEN to support the features of Octad. Read more
+[here](doc/OFEN.md).
 
 ### Sample Game
 

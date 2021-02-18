@@ -13,6 +13,8 @@ a basic engine, PGN encoding, image generation, and others.
 | ---------- | -------------------------------------------- | --------------------------------------------------------------------------------------- |
 | **octad**  | [dechristopher/octad](README.md)             | Move generation, serialization / deserialization, turn management, checkmate detection  |
 | **image**  | [dechristopher/octad/image](image/README.md) | SVG octad board image generation                                                        |
+| **liad**   | [dechristopher/octad/liad](liad/liad.go)     | Li(bre oct)ad test harness and sample self play implementation                          |
+
 
 ## Installation
 

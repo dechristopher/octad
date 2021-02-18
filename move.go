@@ -35,6 +35,13 @@ func (m *Move) String() string {
 	return m.s1.String() + m.s2.String() + m.promo.String()
 }
 
+// String
+func (m *Move) Equals(move *Move) bool {
+	return m.String() == move.String() &&
+		m.tags == move.tags &&
+		m.promo == move.promo
+}
+
 // S1 returns the origin square of the move.
 func (m *Move) S1() Square {
 	return m.s1
@@ -66,7 +73,7 @@ func (a moveSlice) find(m *Move) *Move {
 		return nil
 	}
 	for _, move := range a {
-		if move.String() == m.String() {
+		if m.Equals(move) {
 			return move
 		}
 	}

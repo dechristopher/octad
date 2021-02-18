@@ -196,21 +196,21 @@ func (b *Board) MarshalBinary() (data []byte, err error) {
 // in the following order: WhiteKing, WhiteQueen, WhiteRook, WhiteBishop, WhiteKnight
 // WhitePawn, BlackKing, BlackQueen, BlackRook, BlackBishop, BlackKnight, BlackPawn
 func (b *Board) UnmarshalBinary(data []byte) error {
-	if len(data) != 96 {
+	if len(data) != 24 {
 		return errors.New("octad: invalid number of bytes for board unmarshal binary")
 	}
-	b.bbWhiteKing = bitboard(binary.BigEndian.Uint64(data[:8]))
-	b.bbWhiteQueen = bitboard(binary.BigEndian.Uint64(data[8:16]))
-	b.bbWhiteRook = bitboard(binary.BigEndian.Uint64(data[16:24]))
-	b.bbWhiteBishop = bitboard(binary.BigEndian.Uint64(data[24:32]))
-	b.bbWhiteKnight = bitboard(binary.BigEndian.Uint64(data[32:40]))
-	b.bbWhitePawn = bitboard(binary.BigEndian.Uint64(data[40:48]))
-	b.bbBlackKing = bitboard(binary.BigEndian.Uint64(data[48:56]))
-	b.bbBlackQueen = bitboard(binary.BigEndian.Uint64(data[56:64]))
-	b.bbBlackRook = bitboard(binary.BigEndian.Uint64(data[64:72]))
-	b.bbBlackBishop = bitboard(binary.BigEndian.Uint64(data[72:80]))
-	b.bbBlackKnight = bitboard(binary.BigEndian.Uint64(data[80:88]))
-	b.bbBlackPawn = bitboard(binary.BigEndian.Uint64(data[88:96]))
+	b.bbWhiteKing = bitboard(binary.BigEndian.Uint16(data[:2]))
+	b.bbWhiteQueen = bitboard(binary.BigEndian.Uint16(data[2:4]))
+	b.bbWhiteRook = bitboard(binary.BigEndian.Uint16(data[4:6]))
+	b.bbWhiteBishop = bitboard(binary.BigEndian.Uint16(data[6:8]))
+	b.bbWhiteKnight = bitboard(binary.BigEndian.Uint16(data[8:10]))
+	b.bbWhitePawn = bitboard(binary.BigEndian.Uint16(data[10:12]))
+	b.bbBlackKing = bitboard(binary.BigEndian.Uint16(data[12:14]))
+	b.bbBlackQueen = bitboard(binary.BigEndian.Uint16(data[14:16]))
+	b.bbBlackRook = bitboard(binary.BigEndian.Uint16(data[16:18]))
+	b.bbBlackBishop = bitboard(binary.BigEndian.Uint16(data[18:20]))
+	b.bbBlackKnight = bitboard(binary.BigEndian.Uint16(data[20:22]))
+	b.bbBlackPawn = bitboard(binary.BigEndian.Uint16(data[22:24]))
 	b.calcConvenienceBBs(nil)
 	return nil
 }

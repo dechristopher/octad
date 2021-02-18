@@ -14,7 +14,7 @@ func TestCheckmate(t *testing.T) {
 	}
 	g, err := NewGame(ofen)
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	if err := g.MoveStr("Qc2#"); err != nil {
@@ -38,7 +38,7 @@ func TestCheckmateFromOFEN(t *testing.T) {
 	}
 	g, err := NewGame(ofen)
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	if g.Method() != Checkmate {
@@ -58,7 +58,7 @@ func TestStalemate(t *testing.T) {
 	}
 	g, err := NewGame(ofen)
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	if err := g.MoveStr("Qb2"); err != nil {
@@ -81,7 +81,7 @@ func TestInvalidStalemate(t *testing.T) {
 	}
 	g, err := NewGame(ofen)
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	if err := g.MoveStr("c4=Q"); err != nil {
@@ -95,7 +95,7 @@ func TestInvalidStalemate(t *testing.T) {
 func TestThreeFoldRepetition(t *testing.T) {
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	moves := []string{
@@ -119,7 +119,7 @@ func TestThreeFoldRepetition(t *testing.T) {
 func TestInvalidThreeFoldRepetition(t *testing.T) {
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	moves := []string{
@@ -139,7 +139,7 @@ func TestInvalidThreeFoldRepetition(t *testing.T) {
 func TestFiveFoldRepetition(t *testing.T) {
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	moves := []string{
@@ -163,7 +163,7 @@ func TestFiftyMoveRule(t *testing.T) {
 	ofen, _ := OFEN("n2k/4/3K/N3 b - - 100 60")
 	g, err := NewGame(ofen)
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	if err := g.Draw(FiftyMoveRule); err != nil {
@@ -175,7 +175,7 @@ func TestInvalidFiftyMoveRule(t *testing.T) {
 	ofen, _ := OFEN("n2k/4/3K/N3 b - - 99 60")
 	g, err := NewGame(ofen)
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	if err := g.Draw(FiftyMoveRule); err == nil {
@@ -187,7 +187,7 @@ func TestSeventyFiveMoveRule(t *testing.T) {
 	ofen, _ := OFEN("n2k/4/3K/N3 b - - 149 80")
 	g, err := NewGame(ofen)
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	if err := g.MoveStr("Kc4"); err != nil {
@@ -212,7 +212,7 @@ func TestInsufficientMaterial(t *testing.T) {
 		}
 		g, err := NewGame(ofen)
 		if err != nil {
-			t.Fail()
+			t.Fatalf(err.Error())
 			return
 		}
 		if g.Outcome() != Draw || g.Method() != InsufficientMaterial {
@@ -234,7 +234,7 @@ func TestSufficientMaterial(t *testing.T) {
 		}
 		g, err := NewGame(ofen)
 		if err != nil {
-			t.Fail()
+			t.Fatalf(err.Error())
 			return
 		}
 		if g.Outcome() != NoOutcome {
@@ -247,7 +247,7 @@ func TestSufficientMaterial(t *testing.T) {
 func TestSerializationCycle(t *testing.T) {
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	pgn, err := PGN(strings.NewReader(g.String()))
@@ -256,7 +256,7 @@ func TestSerializationCycle(t *testing.T) {
 	}
 	cp, err := NewGame(pgn)
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	if cp.String() != g.String() {
@@ -267,7 +267,7 @@ func TestSerializationCycle(t *testing.T) {
 func TestInitialNumOfValidMoves(t *testing.T) {
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	if len(g.ValidMoves()) != 10 {
@@ -278,7 +278,7 @@ func TestInitialNumOfValidMoves(t *testing.T) {
 func TestTagPairs(t *testing.T) {
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 	g.AddTagPair("Draw Offer", "White")

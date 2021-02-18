@@ -25,7 +25,7 @@ func TestBoardTextSerialization(t *testing.T) {
 func TestBoardBinarySerialization(t *testing.T) {
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 
@@ -54,7 +54,7 @@ func TestBoardRotation(t *testing.T) {
 	}
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 
@@ -70,7 +70,7 @@ func TestBoardRotation(t *testing.T) {
 func TestBoardFlip(t *testing.T) {
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 
@@ -100,7 +100,7 @@ func TestBoardFlip(t *testing.T) {
 func TestBoardTranspose(t *testing.T) {
 	g, err := NewGame()
 	if err != nil {
-		t.Fail()
+		t.Fatalf(err.Error())
 		return
 	}
 

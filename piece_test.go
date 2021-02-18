@@ -17,7 +17,7 @@ func TestPieceString(t *testing.T) {
 
 	for _, table := range tables {
 		if table.piece.String() != table.str {
-			t.Errorf("String version of piece was incorrect.")
+			t.Errorf("piece: string version of piece was incorrect.")
 		}
 	}
 }

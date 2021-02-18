@@ -28,7 +28,7 @@ func TestBitboardReverse(t *testing.T) {
 	for _, p := range tests {
 		r := uint16(bitboard(p.initial).Reverse())
 		if r != p.reversed {
-			t.Fatalf("bitboard reverse of %s expected %s "+
+			t.Fatalf("bitboard: reverse of %s expected %s "+
 				"but got %s", intStr(p.initial), intStr(p.reversed), intStr(r))
 		}
 	}
@@ -40,7 +40,7 @@ func TestBitboardOccupied(t *testing.T) {
 	}
 	bb := newBitboard(m)
 	if bb.Occupied(B3) != true {
-		t.Fatalf("bitboard occupied of %s expected %t "+
+		t.Fatalf("bitboard: occupied of %s expected %t "+
 			"but got %t", bb, true, false)
 	}
 }

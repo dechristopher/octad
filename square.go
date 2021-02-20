@@ -38,37 +38,37 @@ func getSquare(f File, r Rank) Square {
 const (
 	// NoSquare represents an invalid square
 	NoSquare Square = iota - 1
-	// The A1 square, index 0
+	// A1 square, index 0
 	A1
-	// The B1 square, index 1
+	// B1 square, index 1
 	B1
-	// The C1 square, index 2
+	// C1 square, index 2
 	C1
-	// The D1 square, index 3
+	// D1 square, index 3
 	D1
-	// The A2 square, index 4
+	// A2 square, index 4
 	A2
-	// The B2 square, index 5
+	// B2 square, index 5
 	B2
-	// The C2 square, index 6
+	// C2 square, index 6
 	C2
-	// The D2 square, index 7
+	// D2 square, index 7
 	D2
-	// The A3 square, index 8
+	// A3 square, index 8
 	A3
-	// The B3 square, index 9
+	// B3 square, index 9
 	B3
-	// The C3 square, index 10
+	// C3 square, index 10
 	C3
-	// The D3 square, index 11
+	// D3 square, index 11
 	D3
-	// The A4 square, index 12
+	// A4 square, index 12
 	A4
-	// The B4 square, index 13
+	// B4 square, index 13
 	B4
-	// The C4 square, index 14
+	// C4 square, index 14
 	C4
-	// The D4 square, index 15
+	// D4 square, index 15
 	D4
 )
 

@@ -76,7 +76,7 @@ func (s *Scanner) Err() error {
 // issue parsing the PGNs.
 // Deprecated: Use Scanner instead.
 func GamesFromPGN(r io.Reader) ([]*Game, error) {
-	games := []*Game{}
+	var games []*Game
 	current := ""
 	count := 0
 	totalCount := 0
@@ -174,11 +174,11 @@ func encodePGN(g *Game) string {
 }
 
 var (
-	tagPairRegex = regexp.MustCompile(`\[(.*)\s\"(.*)\"\]`)
+	tagPairRegex = regexp.MustCompile(`\[(.*)\s"(.*)"]`)
 )
 
 func getTagPairs(pgn string) []*TagPair {
-	tagPairs := []*TagPair{}
+	var tagPairs []*TagPair
 	matches := tagPairRegex.FindAllString(pgn, -1)
 	for _, m := range matches {
 		results := tagPairRegex.FindStringSubmatch(m)
@@ -208,7 +208,7 @@ func moveList(pgn string) ([]string, Outcome) {
 	text = strings.Replace(text, "\n", " ", -1)
 
 	list := strings.Split(text, " ")
-	filtered := []string{}
+	var filtered []string
 	var outcome Outcome
 	for _, move := range list {
 		move = strings.TrimSpace(move)

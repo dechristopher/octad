@@ -35,7 +35,8 @@ func (m *Move) String() string {
 	return m.s1.String() + m.s2.String() + m.promo.String()
 }
 
-// String
+// Equals returns whether or not the move in question is exactly the
+// same as the current move
 func (m *Move) Equals(move *Move) bool {
 	return m.String() == move.String() &&
 		m.tags == move.tags &&

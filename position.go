@@ -122,7 +122,7 @@ func (pos *Position) Board() *Board {
 	return pos.board
 }
 
-// Board returns the position's active en passant square if any.
+// EnPassantSquare returns the position's active en passant square if any.
 func (pos *Position) EnPassantSquare() Square {
 	return pos.enPassantSquare
 }

@@ -18,6 +18,7 @@ func (sq Square) Rank() Rank {
 	return Rank(int(sq) / squaresInRow)
 }
 
+// String returns the string representation of the current square
 func (sq Square) String() string {
 	return sq.File().String() + sq.Rank().String()
 }
@@ -37,22 +38,38 @@ func getSquare(f File, r Rank) Square {
 const (
 	// NoSquare represents an invalid square
 	NoSquare Square = iota - 1
-	A1              // The A1 square, index 0
-	B1              // The B1 square, index 1
-	C1              // The C1 square, index 2
-	D1              // The D1 square, index 3
-	A2              // The A2 square, index 4
-	B2              // The B2 square, index 5
-	C2              // The C2 square, index 6
-	D2              // The D2 square, index 7
-	A3              // The A3 square, index 8
-	B3              // The B3 square, index 9
-	C3              // The C3 square, index 10
-	D3              // The D3 square, index 11
-	A4              // The A4 square, index 12
-	B4              // The B4 square, index 13
-	C4              // The C4 square, index 14
-	D4              // The D4 square, index 15
+	// The A1 square, index 0
+	A1
+	// The B1 square, index 1
+	B1
+	// The C1 square, index 2
+	C1
+	// The D1 square, index 3
+	D1
+	// The A2 square, index 4
+	A2
+	// The B2 square, index 5
+	B2
+	// The C2 square, index 6
+	C2
+	// The D2 square, index 7
+	D2
+	// The A3 square, index 8
+	A3
+	// The B3 square, index 9
+	B3
+	// The C3 square, index 10
+	C3
+	// The D3 square, index 11
+	D3
+	// The A4 square, index 12
+	A4
+	// The B4 square, index 13
+	B4
+	// The C4 square, index 14
+	C4
+	// The D4 square, index 15
+	D4
 )
 
 const (
@@ -64,12 +81,17 @@ const (
 type Rank int8
 
 const (
-	Rank1 Rank = iota // Rank1 is the first rank, index 0
-	Rank2             // Rank2 is the second rank, index 1
-	Rank3             // Rank3 is the third rank, index 2
-	Rank4             // Rank4 is the fourth rank, index 3
+	// Rank1 is the first rank, index 0
+	Rank1 Rank = iota
+	// Rank2 is the second rank, index 1
+	Rank2
+	// Rank3 is the third rank, index 2
+	Rank3
+	// Rank4 is the fourth rank, index 3
+	Rank4
 )
 
+// String returns the string representation of the current rank
 func (r Rank) String() string {
 	return rankChars[r : r+1]
 }
@@ -78,12 +100,17 @@ func (r Rank) String() string {
 type File int8
 
 const (
-	FileA File = iota // FileA is the A file, index 0
-	FileB             // FileB is the B file, index 1
-	FileC             // FileC is the C file, index 2
-	FileD             // FileD is the D file, index 3
+	// FileA is the A file, index 0
+	FileA File = iota
+	// FileB is the B file, index 1
+	FileB
+	// FileC is the C file, index 2
+	FileC
+	// FileD is the D file, index 3
+	FileD
 )
 
+// String returns the string representation of the the current file
 func (f File) String() string {
 	return fileChars[f : f+1]
 }

@@ -140,7 +140,7 @@ func decodePGN(pgn string) (*Game, error) {
 		return nil, err
 	}
 	g.ignoreAutomaticDraws = true
-	decoder := multiDecoder([]Decoder{AlgebraicNotation{}, LongAlgebraicNotation{}, UCINotation{}})
+	decoder := multiDecoder([]Decoder{AlgebraicNotation{}, LongAlgebraicNotation{}, UOINotation{}})
 	for _, alg := range moveStrs {
 		m, err := decoder.Decode(g.Position(), alg)
 		if err != nil {

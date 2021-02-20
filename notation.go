@@ -27,24 +27,24 @@ type Notation interface {
 	Decoder
 }
 
-// UCINotation is a more computer friendly alternative to algebraic
-// notation. This notation uses the same format as the UCI (Universal octad
-// Interface). Examples: e2e4, e7e5, e1g1 (white short castling), e7e8q (for promotion)
-type UCINotation struct{}
+// UOINotation is a more computer friendly alternative to algebraic
+// notation. This notation uses the same format as the UOI (Universal Octad
+// Interface). Example: d3d4q (for promotion)
+type UOINotation struct{}
 
 // String implements the fmt.Stringer interface and returns
 // the notation's name.
-func (UCINotation) String() string {
+func (UOINotation) String() string {
 	return "UCI Notation"
 }
 
 // Encode implements the Encoder interface.
-func (UCINotation) Encode(pos *Position, m *Move) string {
+func (UOINotation) Encode(pos *Position, m *Move) string {
 	return m.S1().String() + m.S2().String() + m.Promo().String()
 }
 
 // Decode implements the Decoder interface.
-func (UCINotation) Decode(pos *Position, s string) (*Move, error) {
+func (UOINotation) Decode(pos *Position, s string) (*Move, error) {
 	l := len(s)
 	err := fmt.Errorf(`octad: failed to decode long algebraic notation text "%s" for position %s`, s, pos)
 	if l < 4 || l > 5 {

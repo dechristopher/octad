@@ -250,6 +250,11 @@ func (b *Board) update(m *Move) {
 		}
 	}
 	// move pieces while castling
+	moveCastledPieces(b, p1, m)
+	b.calcConvenienceBBs(m)
+}
+
+func moveCastledPieces(b *Board, p1 Piece, m *Move) {
 	if p1.Color() == White && m.HasTag(KnightCastle) {
 		b.bbWhiteKnight = (b.bbWhiteKnight & ^bbForSquare(A1)) | bbForSquare(B1)
 	} else if p1.Color() == White && m.HasTag(ClosePawnCastle) {
@@ -263,7 +268,6 @@ func (b *Board) update(m *Move) {
 	} else if p1.Color() == Black && m.HasTag(FarPawnCastle) {
 		b.bbBlackPawn = (b.bbBlackPawn & ^bbForSquare(A4)) | bbForSquare(C4)
 	}
-	b.calcConvenienceBBs(m)
 }
 
 func (b *Board) calcConvenienceBBs(m *Move) {

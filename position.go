@@ -255,26 +255,33 @@ func (pos *Position) UnmarshalBinary(data []byte) error {
 		return err
 	}
 	pos.board = board
+
 	buf := bytes.NewBuffer(data[24:])
+
 	halfMove := uint8(pos.halfMoveClock)
 	if err := binary.Read(buf, binary.BigEndian, &halfMove); err != nil {
 		return err
 	}
 	pos.halfMoveClock = int(halfMove)
+
 	moveCount := uint16(pos.moveCount)
 	if err := binary.Read(buf, binary.BigEndian, &moveCount); err != nil {
 		return err
 	}
 	pos.moveCount = int(moveCount)
+
 	if err := binary.Read(buf, binary.BigEndian, &pos.enPassantSquare); err != nil {
 		return err
 	}
+
 	var b uint8
 	if err := binary.Read(buf, binary.BigEndian, &b); err != nil {
 		return err
 	}
+
 	pos.castleRights = ""
 	pos.turn = White
+
 	if b&bitsCastleWhiteKnight != 0 {
 		pos.castleRights += "N"
 	}
@@ -302,6 +309,7 @@ func (pos *Position) UnmarshalBinary(data []byte) error {
 	if b&bitsHasEnPassant == 0 {
 		pos.enPassantSquare = NoSquare
 	}
+
 	pos.inCheck = isInCheck(pos)
 	return nil
 }
@@ -320,30 +328,38 @@ func (pos *Position) copy() *Position {
 
 func (pos *Position) updateCastleRights(m *Move) CastleRights {
 	cr := string(pos.castleRights)
-	// TODO formally verify these criteria
-	p := pos.board.Piece(m.s1)
-	if p == WhiteKing || m.s1 == A1 || m.s2 == A1 {
-		cr = strings.Replace(cr, "N", "", -1)
+
+	if didPieceMove(pos, m, WhiteKing, A1) {
+		removeCastlingRight(&cr, "N")
 	}
-	if p == WhiteKing || m.s1 == C1 || m.s2 == C1 {
-		cr = strings.Replace(cr, "C", "", -1)
+	if didPieceMove(pos, m, WhiteKing, C1) {
+		removeCastlingRight(&cr, "C")
 	}
-	if p == WhiteKing || m.s1 == D1 || m.s2 == D1 {
-		cr = strings.Replace(cr, "F", "", -1)
+	if didPieceMove(pos, m, WhiteKing, D1) {
+		removeCastlingRight(&cr, "F")
 	}
-	if p == BlackKing || m.s1 == D4 || m.s2 == D4 {
-		cr = strings.Replace(cr, "n", "", -1)
+	if didPieceMove(pos, m, BlackKing, D4) {
+		removeCastlingRight(&cr, "n")
 	}
-	if p == BlackKing || m.s1 == B4 || m.s2 == B4 {
-		cr = strings.Replace(cr, "c", "", -1)
+	if didPieceMove(pos, m, BlackKing, D4) {
+		removeCastlingRight(&cr, "c")
 	}
-	if p == BlackKing || m.s1 == A4 || m.s2 == A4 {
-		cr = strings.Replace(cr, "f", "", -1)
+	if didPieceMove(pos, m, BlackKing, A4) {
+		removeCastlingRight(&cr, "f")
 	}
 	if cr == "" {
 		cr = "-"
 	}
+
 	return CastleRights(cr)
+}
+
+func didPieceMove(pos *Position, m *Move, p Piece, square Square) bool {
+	return pos.board.Piece(m.s1) == p || m.s1 == square || m.s2 == square
+}
+
+func removeCastlingRight(rights *string, removedRight string) {
+	*rights = strings.Replace(*rights, removedRight, "", -1)
 }
 
 func (pos *Position) updateEnPassantSquare(m *Move) Square {

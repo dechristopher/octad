@@ -66,7 +66,7 @@ is what that would look like on the board:
 OFEN is a derivation of FEN to support the features of Octad. Read more
 [here](doc/OFEN.md).
 
-### Sample Game
+### Sample Games
 
 ```pgn
 1.O-O a3
@@ -83,4 +83,15 @@ OFEN is a derivation of FEN to support the features of Octad. Read more
 12.Kxb2 1/2-1/2
 
 Drawn by Insufficient Material
+```
+
+```pgn
+1.c2 b3
+2.Kb2 O-O-O
+3.cxb3 cxb3
+4.d2 Nc2
+5.d3 Nxa1
+6.d4=Q# 1-0
+
+White wins by Checkmate
 ```

@@ -217,7 +217,7 @@ func TestInsufficientMaterial(t *testing.T) {
 		}
 		if g.Outcome() != Draw || g.Method() != InsufficientMaterial {
 			log.Println(g.Position().Board().Draw())
-			t.Fatalf("game: %s should automatically draw by insufficent material", o)
+			t.Fatalf("game: %s should automatically draw by insufficient material", o)
 		}
 	}
 }
@@ -239,7 +239,7 @@ func TestSufficientMaterial(t *testing.T) {
 		}
 		if g.Outcome() != NoOutcome {
 			log.Println(g.Position().Board().Draw())
-			t.Fatalf("game: %s should not find insufficent material", o)
+			t.Fatalf("game: %s should not find insufficient material", o)
 		}
 	}
 }

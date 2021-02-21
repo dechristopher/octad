@@ -279,39 +279,45 @@ func (pos *Position) UnmarshalBinary(data []byte) error {
 		return err
 	}
 
-	pos.castleRights = ""
-	pos.turn = White
+	pos.castleRights = decodeCastleRights(b)
 
-	if b&bitsCastleWhiteKnight != 0 {
-		pos.castleRights += "N"
-	}
-	if b&bitsCastleWhiteClose != 0 {
-		pos.castleRights += "C"
-	}
-	if b&bitsCastleWhiteFar != 0 {
-		pos.castleRights += "F"
-	}
-	if b&bitsCastleBlackKnight != 0 {
-		pos.castleRights += "n"
-	}
-	if b&bitsCastleBlackClose != 0 {
-		pos.castleRights += "c"
-	}
-	if b&bitsCastleBlackFar != 0 {
-		pos.castleRights += "f"
-	}
-	if pos.castleRights == "" {
-		pos.castleRights = "-"
-	}
+	pos.turn = White
 	if b&bitsTurn != 0 {
 		pos.turn = Black
 	}
+
 	if b&bitsHasEnPassant == 0 {
 		pos.enPassantSquare = NoSquare
 	}
 
 	pos.inCheck = isInCheck(pos)
 	return nil
+}
+
+func decodeCastleRights(rights uint8) CastleRights {
+	cr := ""
+	if rights&bitsCastleWhiteKnight != 0 {
+		cr += "N"
+	}
+	if rights&bitsCastleWhiteClose != 0 {
+		cr += "C"
+	}
+	if rights&bitsCastleWhiteFar != 0 {
+		cr += "F"
+	}
+	if rights&bitsCastleBlackKnight != 0 {
+		cr += "n"
+	}
+	if rights&bitsCastleBlackClose != 0 {
+		cr += "c"
+	}
+	if rights&bitsCastleBlackFar != 0 {
+		cr += "f"
+	}
+	if cr == "" {
+		cr = "-"
+	}
+	return CastleRights(cr)
 }
 
 func (pos *Position) copy() *Position {

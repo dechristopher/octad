@@ -95,3 +95,27 @@ Drawn by Insufficient Material
 
 White wins by Checkmate
 ```
+
+## Performance
+
+**octad** has been performance tuned, using
+[pprof](https://golang.org/pkg/runtime/pprof/), with the goal of being fast
+enough for use by octad bots and engines. This implementation relies heavily
+on the use of [bitboards](https://chessprogramming.wikispaces.com/Bitboards),
+resulting in very solid computational performance.
+
+### Benchmarks
+
+The benchmarks can be run with the following command:
+```
+go test -bench=.
+```
+
+Results from the baseline 2019 16" MBP:
+```
+BenchmarkBitboardReverse-12           	1000000000     0.000016 ns/op
+BenchmarkStalemateStatus-12           	971688	       1220 ns/op
+BenchmarkInvalidStalemateStatus-12    	1387780	       857 ns/op
+BenchmarkPositionHash-12              	1429471	       841 ns/op
+BenchmarkValidMoves-12                	235640	       4992 ns/op
+```

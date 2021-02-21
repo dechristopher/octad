@@ -327,7 +327,7 @@ func TestPositionHash(t *testing.T) {
 }
 
 func BenchmarkStalemateStatus(b *testing.B) {
-	ofenStr := "k1K5/8/8/8/8/8/8/1Q6 w - - 0 1"
+	ofenStr := "3k/4/3p/3K b - - 2 10"
 	ofen, err := OFEN(ofenStr)
 	if err != nil {
 		b.Fatal(err)
@@ -337,7 +337,7 @@ func BenchmarkStalemateStatus(b *testing.B) {
 		b.Fatalf(err.Error())
 		return
 	}
-	if err := g.MoveStr("Qb6"); err != nil {
+	if err := g.MoveStr("Kd3"); err != nil {
 		b.Fatal(err)
 	}
 	b.ResetTimer()
@@ -347,7 +347,7 @@ func BenchmarkStalemateStatus(b *testing.B) {
 }
 
 func BenchmarkInvalidStalemateStatus(b *testing.B) {
-	ofenStr := "8/3P4/8/8/8/7k/7p/7K w - - 2 70"
+	ofenStr := "4/P2k/3p/3K w - - 2 10"
 	ofen, err := OFEN(ofenStr)
 	if err != nil {
 		b.Fatal(err)
@@ -357,7 +357,7 @@ func BenchmarkInvalidStalemateStatus(b *testing.B) {
 		b.Fatalf(err.Error())
 		return
 	}
-	if err := g.MoveStr("d8=Q"); err != nil {
+	if err := g.MoveStr("a4=Q"); err != nil {
 		b.Fatal(err)
 	}
 	b.ResetTimer()
@@ -367,7 +367,7 @@ func BenchmarkInvalidStalemateStatus(b *testing.B) {
 }
 
 func BenchmarkPositionHash(b *testing.B) {
-	ofenStr := "8/3P4/8/8/8/7k/7p/7K w - - 2 70"
+	ofenStr := "4/P2k/3p/3K w - - 2 10"
 	ofen, err := OFEN(ofenStr)
 	if err != nil {
 		b.Fatal(err)

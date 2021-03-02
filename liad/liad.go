@@ -50,6 +50,9 @@ func main() {
 				if game.Position().EnPassantSquare() != octad.NoSquare {
 					fmt.Printf(", enp: %s", game.Position().EnPassantSquare().String())
 				}
+				if game.Position().InCheck() {
+					fmt.Printf(", in check at %s", game.Position().CheckSquare())
+				}
 			}
 			fmt.Println(game.Position().Board().Draw())
 

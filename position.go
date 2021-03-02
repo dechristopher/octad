@@ -137,6 +137,20 @@ func (pos *Position) CastleRights() CastleRights {
 	return pos.castleRights
 }
 
+// InCheck returns true if the king is in check in the position.
+func (pos *Position) InCheck() bool {
+	return pos.inCheck
+}
+
+// CheckSquare returns the square containing the checked king.
+func (pos *Position) CheckSquare() Square {
+	if pos.inCheck {
+		return pos.activeKingSquare()
+	}
+
+	return NoSquare
+}
+
 // String implements the fmt.Stringer interface and returns a
 // string with the OFEN format: ppkn/4/4/NKPP w NCFncf - 0 1
 func (pos *Position) String() string {
@@ -366,6 +380,14 @@ func didPieceMove(pos *Position, m *Move, p Piece, square Square) bool {
 
 func removeCastlingRight(rights *string, removedRight string) {
 	*rights = strings.Replace(*rights, removedRight, "", -1)
+}
+
+func (pos *Position) activeKingSquare() Square {
+	kingSq := pos.board.whiteKingSq
+	if pos.Turn() == Black {
+		kingSq = pos.board.blackKingSq
+	}
+	return kingSq
 }
 
 func (pos *Position) updateEnPassantSquare(m *Move) Square {

@@ -109,10 +109,7 @@ func addTags(m *Move, pos *Position) {
 }
 
 func isInCheck(pos *Position) bool {
-	kingSq := pos.board.whiteKingSq
-	if pos.Turn() == Black {
-		kingSq = pos.board.blackKingSq
-	}
+	kingSq := pos.activeKingSquare()
 	// king should only be missing in tests / examples
 	if kingSq == NoSquare {
 		return false

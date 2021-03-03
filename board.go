@@ -261,12 +261,16 @@ func moveCastledPieces(b *Board, p1 Piece, m *Move) {
 		b.bbWhitePawn = (b.bbWhitePawn & ^bbForSquare(C1)) | bbForSquare(B1)
 	} else if p1.Color() == White && m.HasTag(FarPawnCastle) {
 		b.bbWhitePawn = (b.bbWhitePawn & ^bbForSquare(D1)) | bbForSquare(B1)
+		// finagle the king back to C1 since move is technically to D1
+		b.bbWhiteKing = (b.bbWhiteKing & ^bbForSquare(D1)) | bbForSquare(C1)
 	} else if p1.Color() == Black && m.HasTag(KnightCastle) {
 		b.bbBlackKnight = (b.bbBlackKnight & ^bbForSquare(D4)) | bbForSquare(C4)
 	} else if p1.Color() == Black && m.HasTag(ClosePawnCastle) {
 		b.bbBlackPawn = (b.bbBlackPawn & ^bbForSquare(B4)) | bbForSquare(C4)
 	} else if p1.Color() == Black && m.HasTag(FarPawnCastle) {
 		b.bbBlackPawn = (b.bbBlackPawn & ^bbForSquare(A4)) | bbForSquare(C4)
+		// finagle the king back to B4 since move is technically to A4
+		b.bbBlackKing = (b.bbBlackKing ^ bbForSquare(A4)) | bbForSquare(B4)
 	}
 }
 

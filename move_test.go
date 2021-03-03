@@ -21,10 +21,10 @@ type perfTest struct {
 // https://www.chessprogramming.org/Perft_Results
 var perfResults = []perfTest{
 	{pos: unsafeOFEN("ppkn/4/4/NKPP w NCFncf - 0 1"), nodesPerDepth: []int{
-		10, 84, 642, 4348, 29171, 183118,
+		10, 84, 642, 4348, 29382, 185195,
 	}},
 	{pos: unsafeOFEN("ppkn/4/2P1/NK1P w NCFncf - 0 1"), nodesPerDepth: []int{
-		10, 75, 538, 3407,
+		10, 75, 548, 3483,
 	}},
 }
 
@@ -58,9 +58,9 @@ func countMoves(t *testing.T, originalPosition *Position, positions []*Position,
 		t.Log("##############################")
 		t.Log("# Details in JSONL (http://jsonlines.org)")
 		t.Log("###")
-		for _, pos := range positions {
-			t.Logf(`{"position": "%s", "moves": %d}`, pos.String(), len(pos.ValidMoves()))
-		}
+		//for _, pos := range positions {
+		//	//t.Logf(`{"position": "%s", "moves": %d}`, pos.String(), len(pos.ValidMoves()))
+		//}
 	}
 	countMoves(t, originalPosition, newPositions, nodesPerDepth[1:], maxDepth)
 }

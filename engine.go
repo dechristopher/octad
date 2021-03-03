@@ -220,7 +220,7 @@ func castleMoves(pos *Position) []*Move {
 			(^pos.board.emptySqs&(bbForSquare(C1))) == 0 &&
 			!squaresAreAttacked(pos, C1) &&
 			!pos.inCheck {
-			m := &Move{s1: B1, s2: C1}
+			m := &Move{s1: B1, s2: D1}
 			m.addTag(FarPawnCastle)
 			addTags(m, pos)
 			moves = append(moves, m)
@@ -249,7 +249,7 @@ func castleMoves(pos *Position) []*Move {
 			(^pos.board.emptySqs&(bbForSquare(B4))) == 0 &&
 			!squaresAreAttacked(pos, B4) &&
 			!pos.inCheck {
-			m := &Move{s1: C4, s2: B4}
+			m := &Move{s1: C4, s2: A4}
 			m.addTag(FarPawnCastle)
 			addTags(m, pos)
 			moves = append(moves, m)

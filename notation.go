@@ -71,8 +71,7 @@ func (UOINotation) Decode(pos *Position, s string) (*Move, error) {
 	}
 	p := pos.Board().Piece(s1)
 	p2 := pos.Board().Piece(s2)
-	// TODO formally verify this decoding
-	// TODO make sure piece destinations and criteria make sense
+
 	if p.Type() == King {
 		if ((s1 == B1 && s2 == A1) || (s1 == C4 && s2 == D4)) && p2.Type() == Knight && p.Color() == p2.Color() {
 			m.addTag(KnightCastle)
@@ -80,12 +79,12 @@ func (UOINotation) Decode(pos *Position, s string) (*Move, error) {
 			m.addTag(ClosePawnCastle)
 		} else if ((s1 == B1 && s2 == D1) || (s1 == C4 && s2 == A4)) && p2.Type() == Pawn && p.Color() == p2.Color() {
 			m.addTag(FarPawnCastle)
-			fmt.Println("FAR PAWN CASTLE")
 		}
 	} else if p.Type() == Pawn && s2 == pos.enPassantSquare {
 		m.addTag(EnPassant)
 		m.addTag(Capture)
 	}
+
 	c1 := p.Color()
 	c2 := pos.Board().Piece(s2).Color()
 	if c2 != NoColor && c1 != c2 {
@@ -95,8 +94,8 @@ func (UOINotation) Decode(pos *Position, s string) (*Move, error) {
 }
 
 // AlgebraicNotation (or Standard Algebraic Notation) is the
-// official octad notation used by FIDE. Examples: e4, e5,
-// O-O (short castling), e8=Q (promotion)
+// official octad notation used by FIDE. Examples: c2, b3,
+// O-O (short castling), d4=Q (promotion)
 type AlgebraicNotation struct{}
 
 // String implements the fmt.Stringer interface and returns

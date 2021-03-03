@@ -84,7 +84,7 @@ func (pos *Position) Update(m *Move) *Position {
 	ncr := pos.updateCastleRights(m)
 	p := pos.board.Piece(m.s1)
 	halfMove := pos.halfMoveClock
-	if p.Type() == Pawn || m.HasTag(Capture) || cr != ncr {
+	if p.Type() == Pawn || isPureCapture(m) || cr != ncr {
 		halfMove = 0
 	} else {
 		halfMove++
@@ -332,6 +332,12 @@ func decodeCastleRights(rights uint8) CastleRights {
 		cr = "-"
 	}
 	return CastleRights(cr)
+}
+
+// returns true if the move is not a castle move
+func isPureCapture(m *Move) bool {
+	return m.HasTag(Capture) && !m.HasTag(FarPawnCastle) &&
+		!m.HasTag(ClosePawnCastle) && !m.HasTag(KnightCastle)
 }
 
 func (pos *Position) copy() *Position {

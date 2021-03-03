@@ -99,3 +99,6 @@ func main() {
 		//}
 	}
 }
+
+// Illegal move example:
+//"b1b2","d4c2","d1c2","b4b3","a1b3","c4a4","c2c3","b4c3"

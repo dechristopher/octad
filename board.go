@@ -295,8 +295,14 @@ func (b *Board) calcConvenienceBBs(m *Move) {
 		}
 	} else if m.s1 == b.whiteKingSq {
 		b.whiteKingSq = m.s2
+		if m.HasTag(FarPawnCastle) {
+			b.whiteKingSq = C1
+		}
 	} else if m.s1 == b.blackKingSq {
 		b.blackKingSq = m.s2
+		if m.HasTag(FarPawnCastle) {
+			b.blackKingSq = B4
+		}
 	}
 }
 

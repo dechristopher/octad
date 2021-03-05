@@ -367,7 +367,7 @@ func (pos *Position) updateCastleRights(m *Move) CastleRights {
 	if didPieceMove(pos, m, BlackKing, D4) {
 		removeCastlingRight(&cr, "n")
 	}
-	if didPieceMove(pos, m, BlackKing, D4) {
+	if didPieceMove(pos, m, BlackKing, B4) {
 		removeCastlingRight(&cr, "c")
 	}
 	if didPieceMove(pos, m, BlackKing, A4) {

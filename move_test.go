@@ -21,10 +21,10 @@ type perfTest struct {
 // https://www.chessprogramming.org/Perft_Results
 var perfResults = []perfTest{
 	{pos: unsafeOFEN("ppkn/4/4/NKPP w NCFncf - 0 1"), nodesPerDepth: []int{
-		10, 84, 642, 4373, 29389, 185151,
+		10, 84, 642, 4375, 29309, 183931,
 	}},
 	{pos: unsafeOFEN("ppkn/4/2P1/NK1P w NCFncf - 0 1"), nodesPerDepth: []int{
-		10, 75, 538, 3432,
+		10, 75, 538, 3433,
 	}},
 }
 

@@ -39,7 +39,7 @@ func TestCheckmate(t *testing.T) {
 		t.Fatalf(err.Error())
 		return
 	}
-	if err := g.MoveStr("Qc2#"); err != nil {
+	if err = g.MoveStr("Qc2#"); err != nil {
 		t.Fatal(err)
 	}
 	if g.Method() != Checkmate {
@@ -83,7 +83,7 @@ func TestStalemate(t *testing.T) {
 		t.Fatalf(err.Error())
 		return
 	}
-	if err := g.MoveStr("Qb2"); err != nil {
+	if err = g.MoveStr("Qb2"); err != nil {
 		t.Fatal(err)
 	}
 	if g.Method() != Stalemate {
@@ -106,7 +106,7 @@ func TestInvalidStalemate(t *testing.T) {
 		t.Fatalf(err.Error())
 		return
 	}
-	if err := g.MoveStr("c4=Q"); err != nil {
+	if err = g.MoveStr("c4=Q"); err != nil {
 		t.Fatal(err)
 	}
 	if g.Outcome() != NoOutcome {
@@ -126,11 +126,11 @@ func TestThreeFoldRepetition(t *testing.T) {
 		"Nc2", "Nb3", "Na1", "Nd4",
 	}
 	for _, m := range moves {
-		if err := g.MoveStr(m); err != nil {
+		if err = g.MoveStr(m); err != nil {
 			t.Fatal(err)
 		}
 	}
-	if err := g.Draw(ThreefoldRepetition); err != nil {
+	if err = g.Draw(ThreefoldRepetition); err != nil {
 		for _, pos := range g.Positions() {
 			log.Println(pos.String())
 		}
@@ -172,7 +172,7 @@ func TestFiveFoldRepetition(t *testing.T) {
 		"Nc2", "Nb3", "Na1", "Nd4",
 	}
 	for _, m := range moves {
-		if err := g.MoveStr(m); err != nil {
+		if err = g.MoveStr(m); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -200,7 +200,7 @@ func TestInvalidFiftyMoveRule(t *testing.T) {
 		t.Fatalf(err.Error())
 		return
 	}
-	if err := g.Draw(FiftyMoveRule); err == nil {
+	if err = g.Draw(FiftyMoveRule); err == nil {
 		t.Fatal("game: should require fifty moves")
 	}
 }
@@ -212,7 +212,7 @@ func TestSeventyFiveMoveRule(t *testing.T) {
 		t.Fatalf(err.Error())
 		return
 	}
-	if err := g.MoveStr("Kc4"); err != nil {
+	if err = g.MoveStr("Kc4"); err != nil {
 		t.Fatal(err)
 	}
 	if g.Outcome() != Draw || g.Method() != SeventyFiveMoveRule {
@@ -325,7 +325,7 @@ func TestPositionHash(t *testing.T) {
 		return
 	}
 	for _, s := range []string{"Nc2", "b3", "d2"} {
-		err := g1.MoveStr(s)
+		err = g1.MoveStr(s)
 		if err != nil {
 			t.Fatalf(err.Error())
 			return
@@ -337,7 +337,7 @@ func TestPositionHash(t *testing.T) {
 		return
 	}
 	for _, s := range []string{"d2", "b3", "Nc2"} {
-		err := g2.MoveStr(s)
+		err = g2.MoveStr(s)
 		if err != nil {
 			t.Fatalf(err.Error())
 			return
@@ -359,7 +359,7 @@ func BenchmarkStalemateStatus(b *testing.B) {
 		b.Fatalf(err.Error())
 		return
 	}
-	if err := g.MoveStr("Kd3"); err != nil {
+	if err = g.MoveStr("Kd3"); err != nil {
 		b.Fatal(err)
 	}
 	b.ResetTimer()
@@ -379,7 +379,7 @@ func BenchmarkInvalidStalemateStatus(b *testing.B) {
 		b.Fatalf(err.Error())
 		return
 	}
-	if err := g.MoveStr("a4=Q"); err != nil {
+	if err = g.MoveStr("a4=Q"); err != nil {
 		b.Fatal(err)
 	}
 	b.ResetTimer()

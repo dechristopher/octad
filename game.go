@@ -333,7 +333,7 @@ func (g *Game) GetTagPair(k string) *TagPair {
 // RemoveTagPair removes the tag pair for the given key and
 // returns true if a tag pair was removed.
 func (g *Game) RemoveTagPair(k string) bool {
-	cp := []*TagPair{}
+	var cp []*TagPair
 	found := false
 	for _, tag := range g.tagPairs {
 		if tag.Key == k {

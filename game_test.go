@@ -6,6 +6,28 @@ import (
 	"testing"
 )
 
+func TestUndoMove(t *testing.T) {
+	g, err := NewGame()
+	if err != nil {
+		t.Fatalf(err.Error())
+		return
+	}
+
+	if err = g.MoveStr("c2"); err != nil {
+		t.Fatal(err)
+	}
+
+	g.UndoMove()
+
+	if g.Position().String() != startOFEN {
+		t.Fatalf("game: expected default OFEN after UndoMove but got %s", g.Position().String())
+	}
+
+	if len(g.Moves()) != 0 {
+		t.Fatalf("game: expected no moves played after UndoMove but got %d", len(g.Moves()))
+	}
+}
+
 func TestCheckmate(t *testing.T) {
 	ofenStr := "4/1K2/1Q2/3k w - - 7 7"
 	ofen, err := OFEN(ofenStr)

@@ -181,6 +181,19 @@ func (g *Game) MoveStr(s string) error {
 	return g.Move(m)
 }
 
+// UndoMove will undo the last move played and revert the game to
+// the position as it was before that move was played.
+func (g *Game) UndoMove() {
+	if len(g.moves) == 0 {
+		return
+	}
+
+	g.moves = g.moves[:len(g.moves)-1]
+	g.positions = g.positions[:len(g.positions)-1]
+	g.pos = g.positions[len(g.positions)-1]
+	g.updatePosition()
+}
+
 // ValidMoves returns a list of valid moves in the
 // current position.
 func (g *Game) ValidMoves() []*Move {

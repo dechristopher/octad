@@ -40,18 +40,12 @@ const (
 	DrawOffer
 	// Stalemate indicates that the game was drawn by stalemate.
 	Stalemate
-	// ThreefoldRepetition indicates that the game was drawn when the game
-	// state was repeated three times and a player requested a draw.
+	// ThreefoldRepetition indicates that the game was automatically drawn
+	// by the game state being repeated three times.
 	ThreefoldRepetition
-	// FivefoldRepetition indicates that the game was automatically drawn
-	// by the game state being repeated five times.
-	FivefoldRepetition
-	// FiftyMoveRule indicates that the game was drawn by the half
-	// move clock being one hundred or greater when a player requested a draw.
-	FiftyMoveRule
-	// SeventyFiveMoveRule indicates that the game was automatically drawn
-	// when the half move clock was one hundred and fifty or greater.
-	SeventyFiveMoveRule
+	// TwentyFiveMoveRule indicates that the game was automatically drawn
+	// when the half move clock was fifty or greater.
+	TwentyFiveMoveRule
 	// InsufficientMaterial indicates that the game was automatically drawn
 	// because there was insufficient material for checkmate.
 	InsufficientMaterial
@@ -267,10 +261,6 @@ func (g *Game) Draw(method Method) error {
 		if g.numRepetitions() < 3 {
 			return errors.New("octad: draw by ThreefoldRepetition requires at least three repetitions of the current board state")
 		}
-	case FiftyMoveRule:
-		if g.pos.halfMoveClock < 100 {
-			return fmt.Errorf("octad: draw by FiftyMoveRule requires the half move clock to be at 100 or greater but is %d", g.pos.halfMoveClock)
-		}
 	case DrawOffer:
 	default:
 		return fmt.Errorf("octad: unsupported draw method %s", method.String())
@@ -299,9 +289,6 @@ func (g *Game) EligibleDraws() []Method {
 	draws := []Method{DrawOffer}
 	if g.numRepetitions() >= 3 {
 		draws = append(draws, ThreefoldRepetition)
-	}
-	if g.pos.halfMoveClock >= 100 {
-		draws = append(draws, FiftyMoveRule)
 	}
 	return draws
 }
@@ -363,15 +350,15 @@ func (g *Game) updatePosition() {
 	}
 
 	// five fold rep creates automatic draw
-	if !g.ignoreAutomaticDraws && g.numRepetitions() >= 5 {
+	if !g.ignoreAutomaticDraws && g.numRepetitions() >= 3 {
 		g.outcome = Draw
-		g.method = FivefoldRepetition
+		g.method = ThreefoldRepetition
 	}
 
 	// 75 move rule creates automatic draw
-	if !g.ignoreAutomaticDraws && g.pos.halfMoveClock >= 150 && g.method != Checkmate {
+	if !g.ignoreAutomaticDraws && g.pos.halfMoveClock >= 50 && g.method != Checkmate {
 		g.outcome = Draw
-		g.method = SeventyFiveMoveRule
+		g.method = TwentyFiveMoveRule
 	}
 
 	// insufficient material creates automatic draw

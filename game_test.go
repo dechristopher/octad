@@ -158,55 +158,8 @@ func TestInvalidThreeFoldRepetition(t *testing.T) {
 	}
 }
 
-func TestFiveFoldRepetition(t *testing.T) {
-	g, err := NewGame()
-	if err != nil {
-		t.Fatalf(err.Error())
-		return
-	}
-	moves := []string{
-		"Nc2", "Nb3", "Na1", "Nd4",
-		"Nc2", "Nb3", "Na1", "Nd4",
-		"Nc2", "Nb3", "Na1", "Nd4",
-		"Nc2", "Nb3", "Na1", "Nd4",
-		"Nc2", "Nb3", "Na1", "Nd4",
-	}
-	for _, m := range moves {
-		if err = g.MoveStr(m); err != nil {
-			t.Fatal(err)
-		}
-	}
-	if g.Outcome() != Draw || g.Method() != FivefoldRepetition {
-		t.Fatal("game: should automatically draw after five repetitions")
-	}
-}
-
-func TestFiftyMoveRule(t *testing.T) {
-	ofen, _ := OFEN("n2k/4/3K/N3 b - - 100 60")
-	g, err := NewGame(ofen)
-	if err != nil {
-		t.Fatalf(err.Error())
-		return
-	}
-	if err := g.Draw(FiftyMoveRule); err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestInvalidFiftyMoveRule(t *testing.T) {
-	ofen, _ := OFEN("n2k/4/3K/N3 b - - 99 60")
-	g, err := NewGame(ofen)
-	if err != nil {
-		t.Fatalf(err.Error())
-		return
-	}
-	if err = g.Draw(FiftyMoveRule); err == nil {
-		t.Fatal("game: should require fifty moves")
-	}
-}
-
-func TestSeventyFiveMoveRule(t *testing.T) {
-	ofen, _ := OFEN("n2k/4/3K/N3 b - - 149 80")
+func TestTwentyFiveMoveRule(t *testing.T) {
+	ofen, _ := OFEN("n2k/4/3K/N3 b - - 49 24")
 	g, err := NewGame(ofen)
 	if err != nil {
 		t.Fatalf(err.Error())
@@ -215,8 +168,8 @@ func TestSeventyFiveMoveRule(t *testing.T) {
 	if err = g.MoveStr("Kc4"); err != nil {
 		t.Fatal(err)
 	}
-	if g.Outcome() != Draw || g.Method() != SeventyFiveMoveRule {
-		t.Fatal("game: should automatically draw after seventy five moves w/ no pawn move or capture")
+	if g.Outcome() != Draw || g.Method() != TwentyFiveMoveRule {
+		t.Fatal("game: should automatically draw after twenty five moves w/ no pawn move or capture")
 	}
 }
 

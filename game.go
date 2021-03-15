@@ -344,7 +344,11 @@ func (g *Game) updatePosition() {
 		if g.pos.Turn() == White {
 			g.outcome = BlackWon
 		}
+	} else if method == NoMethod {
+		g.method = NoMethod
+		g.outcome = NoOutcome
 	}
+
 	if g.outcome != NoOutcome {
 		return
 	}

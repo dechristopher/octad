@@ -28,6 +28,49 @@ func TestUndoMove(t *testing.T) {
 	}
 }
 
+func TestUndoMoveState(t *testing.T) {
+	startPos := "3R/4/2K1/k3 w - - 7 7"
+	ofen, err := OFEN(startPos)
+	if err != nil {
+		t.Fatalf(err.Error())
+		return
+	}
+
+	g, err := NewGame(ofen)
+	if err != nil {
+		t.Fatalf(err.Error())
+		return
+	}
+
+	legalMoves := g.ValidMoves()
+
+	// white checkmates black with rook to a4
+	if err = g.MoveStr("Ra4"); err != nil {
+		t.Fatal(err)
+	}
+
+	if g.Outcome() != WhiteWon || g.Method() != Checkmate {
+		t.Fatalf("game: expected checkmate after d4a4 but got %s - %s",
+			g.Outcome().String(), g.Method().String())
+	}
+
+	g.UndoMove()
+
+	if g.Position().String() != startPos {
+		t.Fatalf("game: expected test start position after UndoMove but got %s", g.Position().String())
+	}
+
+	if g.Outcome() != NoOutcome || g.Method() != NoMethod {
+		t.Fatalf("game: expected no outcome after UndoMove but got %s - %s",
+			g.Outcome().String(), g.Method().String())
+	}
+
+	if len(g.ValidMoves()) != len(legalMoves) {
+		t.Fatalf("game: expected %d valid moes after UndoMove but got %d",
+			len(legalMoves), len(g.ValidMoves()))
+	}
+}
+
 func TestCheckmate(t *testing.T) {
 	ofenStr := "4/1K2/1Q2/3k w - - 7 7"
 	ofen, err := OFEN(ofenStr)

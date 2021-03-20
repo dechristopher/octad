@@ -71,6 +71,8 @@ func main() {
 
 			if move == "-" {
 				break
+			} else if move == "u" {
+				game.UndoMove()
 			} else {
 				err = game.MoveStr(move)
 			}

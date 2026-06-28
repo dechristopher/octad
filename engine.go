@@ -197,73 +197,86 @@ func bbForPossibleMoves(pos *Position, pt PieceType, sq Square) bitboard {
 	return bitboard(0)
 }
 
-// TODO can calc isInCheck twice
+// castleMoves returns the legal castle moves for the side to move. Octad
+// castling is position-relative: the king may castle from whatever home-rank
+// square it deployed to. It swaps with an adjacent friendly knight (knight
+// castle) or pawn (close pawn castle), or makes a one-square leap with a pawn
+// two files away over an empty square (far pawn castle). The king never
+// castles into, through, or out of check.
 func castleMoves(pos *Position) []*Move {
 	var moves []*Move
 
-	knightSide := pos.castleRights.CanCastle(pos.Turn(), KnightSide)
-	closeSide := pos.castleRights.CanCastle(pos.Turn(), CloseSide)
-	farSide := pos.castleRights.CanCastle(pos.Turn(), FarSide)
+	if pos.inCheck {
+		return moves
+	}
 
-	if pos.turn == White {
-		// white knight side
-		if knightSide &&
-			!squaresAreAttacked(pos, A1) &&
-			!pos.inCheck {
-			m := &Move{s1: B1, s2: A1}
-			m.addTag(KnightCastle)
-			addTags(m, pos)
-			moves = append(moves, m)
+	c := pos.Turn()
+	kingSq := pos.board.whiteKingSq
+	if c == Black {
+		kingSq = pos.board.blackKingSq
+	}
+	if kingSq == NoSquare || kingSq.Rank() != homeRank(c) {
+		return moves
+	}
+
+	knightSq, closeSq, farSq := castlePartners(pos, c)
+	candidates := []struct {
+		sq     Square
+		side   Side
+		knight bool
+	}{
+		{knightSq, KnightSide, true},
+		{closeSq, CloseSide, false},
+		{farSq, FarSide, false},
+	}
+
+	for _, cand := range candidates {
+		if cand.sq == NoSquare || !pos.castleRights.CanCastle(c, cand.side) {
+			continue
 		}
-		// white far side
-		if farSide &&
-			(^pos.board.emptySqs&(bbForSquare(C1))) == 0 &&
-			!squaresAreAttacked(pos, C1) &&
-			!pos.inCheck {
-			m := &Move{s1: B1, s2: D1}
+
+		dist := int(cand.sq.File()) - int(kingSq.File())
+		if dist < 0 {
+			dist = -dist
+		}
+
+		var m *Move
+		switch dist {
+		case 1:
+			// adjacent swap: the king moves onto the partner square
+			if squaresAreAttacked(pos, cand.sq) {
+				continue
+			}
+			m = &Move{s1: kingSq, s2: cand.sq}
+			if cand.knight {
+				m.addTag(KnightCastle)
+			} else {
+				m.addTag(ClosePawnCastle)
+			}
+		case 2:
+			// one-gap leap: pawns only; the gap must be empty and safe
+			if cand.knight {
+				continue
+			}
+			gap := Square((int(kingSq) + int(cand.sq)) / 2)
+			if pos.board.isOccupied(gap) || squaresAreAttacked(pos, gap) {
+				continue
+			}
+			m = &Move{s1: kingSq, s2: cand.sq}
 			m.addTag(FarPawnCastle)
-			addTags(m, pos)
-			moves = append(moves, m)
+		default:
+			// too far to castle (e.g. a corner king's opposite-corner piece)
+			continue
 		}
-		// white close side
-		if closeSide &&
-			!squaresAreAttacked(pos, C1) &&
-			!pos.inCheck {
-			m := &Move{s1: B1, s2: C1}
-			m.addTag(ClosePawnCastle)
-			addTags(m, pos)
-			moves = append(moves, m)
-		}
-	} else {
-		// black knight side
-		if knightSide &&
-			!squaresAreAttacked(pos, D4) &&
-			!pos.inCheck {
-			m := &Move{s1: C4, s2: D4}
-			m.addTag(KnightCastle)
-			addTags(m, pos)
-			moves = append(moves, m)
-		}
-		// black far side
-		if farSide &&
-			(^pos.board.emptySqs&(bbForSquare(B4))) == 0 &&
-			!squaresAreAttacked(pos, B4) &&
-			!pos.inCheck {
-			m := &Move{s1: C4, s2: A4}
-			m.addTag(FarPawnCastle)
-			addTags(m, pos)
-			moves = append(moves, m)
-		}
-		// black close side
-		if closeSide &&
-			!squaresAreAttacked(pos, B4) &&
-			!pos.inCheck {
-			m := &Move{s1: C4, s2: B4}
-			m.addTag(ClosePawnCastle)
-			addTags(m, pos)
+
+		addTags(m, pos)
+		// reject a castle that would leave the mover in check (a partner can
+		// unblock a slider as it vacates its square)
+		if !m.HasTag(inCheck) {
 			moves = append(moves, m)
 		}
 	}
+
 	return moves
 }
 

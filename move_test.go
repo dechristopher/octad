@@ -19,12 +19,21 @@ type perfTest struct {
 }
 
 // https://www.chessprogramming.org/Perft_Results
+//
+// Counts were lowered when castling became position-relative. The legacy
+// castleMoves emitted a close/far castle from the king's home square based only
+// on the castle-rights bit and the gap being empty, without verifying that the
+// partner pawn was actually present. That produced phantom castles — e.g. with
+// the king on b1 and c1 empty it generated "b1c1" a second time (already a
+// legal king move) and would have materialized a pawn if played. Requiring the
+// real partner piece removes those duplicates, so the corrected node counts are
+// strictly smaller.
 var perfResults = []perfTest{
 	{pos: unsafeOFEN("ppkn/4/4/NKPP w NCFncf - 0 1"), nodesPerDepth: []int{
-		10, 84, 642, 4375, 29309, 183931,
+		10, 84, 630, 4216, 27885, 173414,
 	}},
 	{pos: unsafeOFEN("ppkn/4/2P1/NK1P w NCFncf - 0 1"), nodesPerDepth: []int{
-		10, 75, 538, 3433,
+		9, 66, 461, 2875,
 	}},
 }
 

@@ -72,12 +72,21 @@ func (UOINotation) Decode(pos *Position, s string) (*Move, error) {
 	p := pos.Board().Piece(s1)
 	p2 := pos.Board().Piece(s2)
 
-	if p.Type() == King {
-		if ((s1 == B1 && s2 == A1) || (s1 == C4 && s2 == D4)) && p2.Type() == Knight && p.Color() == p2.Color() {
+	if p.Type() == King && p.Color() == p2.Color() &&
+		s1.Rank() == s2.Rank() && s1.Rank() == homeRank(p.Color()) {
+		// position-relative castle detection: a king "moving" onto a friendly
+		// home-rank piece is a castle. An adjacent knight/pawn is a knight/close
+		// castle; a pawn two files away is a far pawn castle.
+		dist := int(s2.File()) - int(s1.File())
+		if dist < 0 {
+			dist = -dist
+		}
+		switch {
+		case dist == 1 && p2.Type() == Knight:
 			m.addTag(KnightCastle)
-		} else if ((s1 == B1 && s2 == C1) || (s1 == C4 && s2 == B4)) && p2.Type() == Pawn && p.Color() == p2.Color() {
+		case dist == 1 && p2.Type() == Pawn:
 			m.addTag(ClosePawnCastle)
-		} else if ((s1 == B1 && s2 == D1) || (s1 == C4 && s2 == A4)) && p2.Type() == Pawn && p.Color() == p2.Color() {
+		case dist == 2 && p2.Type() == Pawn:
 			m.addTag(FarPawnCastle)
 		}
 	} else if p.Type() == Pawn && s2 == pos.enPassantSquare {

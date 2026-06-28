@@ -352,27 +352,37 @@ func (pos *Position) copy() *Position {
 	}
 }
 
+// updateCastleRights returns the castle rights after applying m. With the
+// deploy phase the king and its castling partners may sit on any home-rank
+// square, so rights are tracked relative to the king's current square rather
+// than the legacy fixed home squares. A side forfeits all of its rights when
+// its king moves; an individual right is forfeited when its partner piece
+// leaves its square or is captured there.
 func (pos *Position) updateCastleRights(m *Move) CastleRights {
 	cr := string(pos.castleRights)
 
-	if didPieceMove(pos, m, WhiteKing, A1) {
-		removeCastlingRight(&cr, "N")
+	for _, c := range []Color{White, Black} {
+		letters := castleLetters(c)
+		// any king move forfeits every right for that color
+		if pos.board.Piece(m.s1) == getPiece(King, c) {
+			for _, l := range letters {
+				removeCastlingRight(&cr, l)
+			}
+			continue
+		}
+		// otherwise a right is lost only when its partner piece is disturbed
+		knightSq, closeSq, farSq := castlePartners(pos, c)
+		if partnerDisturbed(m, knightSq) {
+			removeCastlingRight(&cr, letters[0])
+		}
+		if partnerDisturbed(m, closeSq) {
+			removeCastlingRight(&cr, letters[1])
+		}
+		if partnerDisturbed(m, farSq) {
+			removeCastlingRight(&cr, letters[2])
+		}
 	}
-	if didPieceMove(pos, m, WhiteKing, C1) {
-		removeCastlingRight(&cr, "C")
-	}
-	if didPieceMove(pos, m, WhiteKing, D1) {
-		removeCastlingRight(&cr, "F")
-	}
-	if didPieceMove(pos, m, BlackKing, D4) {
-		removeCastlingRight(&cr, "n")
-	}
-	if didPieceMove(pos, m, BlackKing, B4) {
-		removeCastlingRight(&cr, "c")
-	}
-	if didPieceMove(pos, m, BlackKing, A4) {
-		removeCastlingRight(&cr, "f")
-	}
+
 	if cr == "" {
 		cr = "-"
 	}
@@ -380,8 +390,88 @@ func (pos *Position) updateCastleRights(m *Move) CastleRights {
 	return CastleRights(cr)
 }
 
-func didPieceMove(pos *Position, m *Move, p Piece, square Square) bool {
-	return pos.board.Piece(m.s1) == p || m.s1 == square || m.s2 == square
+// castleLetters returns a color's three castle-rights letters in
+// [knight, close, far] order.
+func castleLetters(c Color) [3]string {
+	if c == White {
+		return [3]string{"N", "C", "F"}
+	}
+	return [3]string{"n", "c", "f"}
+}
+
+// partnerDisturbed reports whether move m moves a castling partner off its
+// square or captures it there.
+func partnerDisturbed(m *Move, sq Square) bool {
+	return sq != NoSquare && (m.s1 == sq || m.s2 == sq)
+}
+
+// homeRank returns the back rank a color's pieces deploy onto.
+func homeRank(c Color) Rank {
+	if c == White {
+		return Rank1
+	}
+	return Rank4
+}
+
+// castlePartners returns the home-rank squares of the king's castling partners
+// for color c: its knight, its nearer ("close") pawn, and its farther ("far")
+// pawn. Any partner that is absent — or the king itself being off its home rank
+// — yields NoSquare. Nearness is measured by file distance from the king,
+// breaking ties toward the lower file, so the standard start reproduces the
+// legacy N/C/F mapping (knight a1/d4, close pawn c1/b4, far pawn d1/a4).
+func castlePartners(pos *Position, c Color) (knight, closePawn, farPawn Square) {
+	knight, closePawn, farPawn = NoSquare, NoSquare, NoSquare
+
+	kingSq := pos.board.whiteKingSq
+	if c == Black {
+		kingSq = pos.board.blackKingSq
+	}
+	hr := homeRank(c)
+	if kingSq == NoSquare || kingSq.Rank() != hr {
+		return
+	}
+
+	knightPiece := getPiece(Knight, c)
+	pawnPiece := getPiece(Pawn, c)
+
+	// collect up to two pawns with their file distance from the king
+	var p1, p2 Square = NoSquare, NoSquare
+	var d1, d2 int
+	for f := FileA; f <= FileD; f++ {
+		sq := getSquare(f, hr)
+		if sq == kingSq {
+			continue
+		}
+		switch pos.board.Piece(sq) {
+		case knightPiece:
+			knight = sq
+		case pawnPiece:
+			dist := int(f) - int(kingSq.File())
+			if dist < 0 {
+				dist = -dist
+			}
+			if p1 == NoSquare {
+				p1, d1 = sq, dist
+			} else {
+				p2, d2 = sq, dist
+			}
+		}
+	}
+
+	// the nearer pawn is "close"; the file loop runs low-to-high so an equal
+	// distance already favors the lower file
+	switch {
+	case p1 == NoSquare:
+		// no pawns on the home rank
+	case p2 == NoSquare:
+		closePawn = p1
+	case d1 <= d2:
+		closePawn, farPawn = p1, p2
+	default:
+		closePawn, farPawn = p2, p1
+	}
+
+	return
 }
 
 func removeCastlingRight(rights *string, removedRight string) {

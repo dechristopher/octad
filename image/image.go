@@ -7,8 +7,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/dechristopher/octad"
 	"github.com/dechristopher/octad/image/internal"
+	"github.com/dechristopher/octad/v2"
 
 	svg "github.com/ajstarks/svgo"
 )

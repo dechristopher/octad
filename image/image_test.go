@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dechristopher/octad"
+	"github.com/dechristopher/octad/v2"
 )
 
 const expectedMD5 = "e9690f7d1403d7c2ce85212f8089127d"

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dechristopher/octad"
+	"github.com/dechristopher/octad/v2"
 )
 
 func main() {

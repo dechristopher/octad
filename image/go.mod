@@ -7,4 +7,4 @@ require (
 	github.com/dechristopher/octad/v2 v2.0.0
 )
 
-replace github.com/dechristopher/octad => ../
+replace github.com/dechristopher/octad/v2 => ../

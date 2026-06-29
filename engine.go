@@ -193,16 +193,17 @@ func bbForPossibleMoves(pos *Position, pt PieceType, sq Square) bitboard {
 		return bbKnightMoves[sq]
 	case Pawn:
 		return pawnMoves(pos, sq)
+	default:
+		return bitboard(0)
 	}
-	return bitboard(0)
 }
 
 // castleMoves returns the legal castle moves for the side to move. Octad
 // castling is position-relative: the king may castle from whatever home-rank
-// square it deployed to. It swaps with an adjacent friendly knight (knight
-// castle) or pawn (close pawn castle), or makes a one-square leap with a pawn
-// two files away over an empty square (far pawn castle). The king never
-// castles into, through, or out of check.
+// square it deployed to. It swaps with an adjacent friendly near piece (the
+// knight, a near castle) or an adjacent pawn (a center castle), or makes a
+// one-square leap with a pawn two files away over an empty square (a far
+// castle). The king never castles into, through, or out of check.
 func castleMoves(pos *Position) []*Move {
 	var moves []*Move
 
@@ -219,23 +220,22 @@ func castleMoves(pos *Position) []*Move {
 		return moves
 	}
 
-	knightSq, closeSq, farSq := castlePartners(pos, c)
+	nearSq, centerSq, farSq := castlePartners(pos, c)
 	candidates := []struct {
-		sq     Square
-		side   Side
-		knight bool
+		sq   Square
+		side Side
 	}{
-		{knightSq, KnightSide, true},
-		{closeSq, CloseSide, false},
-		{farSq, FarSide, false},
+		{nearSq, NearSide},
+		{centerSq, CenterSide},
+		{farSq, FarSide},
 	}
 
-	for _, cand := range candidates {
-		if cand.sq == NoSquare || !pos.castleRights.CanCastle(c, cand.side) {
+	for _, candidate := range candidates {
+		if candidate.sq == NoSquare || !pos.castleRights.CanCastle(c, candidate.side) {
 			continue
 		}
 
-		dist := int(cand.sq.File()) - int(kingSq.File())
+		dist := int(candidate.sq.File()) - int(kingSq.File())
 		if dist < 0 {
 			dist = -dist
 		}
@@ -244,28 +244,31 @@ func castleMoves(pos *Position) []*Move {
 		switch dist {
 		case 1:
 			// adjacent swap: the king moves onto the partner square
-			if squaresAreAttacked(pos, cand.sq) {
+			if squaresAreAttacked(pos, candidate.sq) {
 				continue
 			}
-			m = &Move{s1: kingSq, s2: cand.sq}
-			if cand.knight {
-				m.addTag(KnightCastle)
+			m = &Move{s1: kingSq, s2: candidate.sq}
+			// the near piece is the knight (a near castle); any adjacent pawn
+			// is a center castle
+			if candidate.side == NearSide {
+				m.addTag(NearCastle)
 			} else {
-				m.addTag(ClosePawnCastle)
+				m.addTag(CenterCastle)
 			}
 		case 2:
-			// one-gap leap: pawns only; the gap must be empty and safe
-			if cand.knight {
+			// one-gap leap: pawns only; the near piece (knight) cannot leap, and
+			// the gap must be empty and safe
+			if candidate.side == NearSide {
 				continue
 			}
-			gap := Square((int(kingSq) + int(cand.sq)) / 2)
+			gap := Square((int(kingSq) + int(candidate.sq)) / 2)
 			if pos.board.isOccupied(gap) || squaresAreAttacked(pos, gap) {
 				continue
 			}
-			m = &Move{s1: kingSq, s2: cand.sq}
-			m.addTag(FarPawnCastle)
+			m = &Move{s1: kingSq, s2: candidate.sq}
+			m.addTag(FarCastle)
 		default:
-			// too far to castle (e.g. a corner king's opposite-corner piece)
+			// too far to castle (e.g., a corner king's opposite-corner piece)
 			continue
 		}
 
@@ -342,7 +345,7 @@ var (
 	bbFiles = [4]bitboard{bbFileA, bbFileB, bbFileC, bbFileD}
 	bbRanks = [4]bitboard{bbRank1, bbRank2, bbRank3, bbRank4}
 
-	// bbDiagonals represents bottom-left to top-right diagonal
+	// bbDiagonals represents bottom-left, to top-right diagonal
 	// bitboards calculated per square
 	bbDiagonals = [16]bitboard{
 		33825, // A1
@@ -363,7 +366,7 @@ var (
 		33825, // D4
 	}
 
-	// bbAntiDiagonals represents bottom-right to top-left diagonal
+	// bbAntiDiagonals represents bottom-right, to top-left diagonal
 	// bitboards calculated per square
 	bbAntiDiagonals = [16]bitboard{
 		32768, // A1

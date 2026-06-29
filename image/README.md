@@ -9,7 +9,7 @@ outside dependency, is used to construct the SVG document.
 
 ### SVG
 
-The SVG function is the primary exported function of the package. It writes an
+The SVG function is the primary-exported function of the package. It writes an
 SVG document to the io.Writer given.
 
 ```go

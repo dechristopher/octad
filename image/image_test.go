@@ -37,10 +37,15 @@ func TestSVG(t *testing.T) {
 
 	// create actual svg file for visualization
 	f, err := os.Create("example.svg")
-	defer f.Close()
 	if err != nil {
 		t.Error(err)
 	}
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+			t.Error(err)
+		}
+	}(f)
 	if _, err := io.Copy(f, bytes.NewBufferString(actualSVG)); err != nil {
 		t.Error(err)
 	}

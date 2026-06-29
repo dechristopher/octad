@@ -66,7 +66,7 @@ func TestUndoMoveState(t *testing.T) {
 	}
 
 	if len(g.ValidMoves()) != len(legalMoves) {
-		t.Fatalf("game: expected %d valid moes after UndoMove but got %d",
+		t.Fatalf("game: expected %d valid moves after UndoMove but got %d",
 			len(legalMoves), len(g.ValidMoves()))
 	}
 }

@@ -7,14 +7,14 @@ import (
 	"io"
 	"strings"
 
-	svg "github.com/ajstarks/svgo"
-
 	"github.com/dechristopher/octad"
 	"github.com/dechristopher/octad/image/internal"
+
+	svg "github.com/ajstarks/svgo"
 )
 
 // SVG writes the board SVG representation into the writer.
-// An error is returned if there is there is an error writing data.
+// An error is returned if there is an error writing data.
 // SVG also takes options which can customize the image output.
 func SVG(w io.Writer, b *octad.Board, opts ...func(*encoder)) error {
 	e := newEncoder(w, opts)
@@ -43,7 +43,7 @@ func MarkSquares(c color.Color, sqs ...octad.Square) func(*encoder) {
 	}
 }
 
-// A Encoder encodes octad boards into images.
+// An encoder encodes octad boards into images.
 type encoder struct {
 	w     io.Writer
 	light color.Color
@@ -74,14 +74,9 @@ const (
 	boardHeight = 4 * sqHeight
 )
 
-var (
-	orderOfRanks = []octad.Rank{octad.Rank4, octad.Rank3, octad.Rank2, octad.Rank1}
-	orderOfFiles = []octad.File{octad.FileA, octad.FileB, octad.FileC, octad.FileD}
-)
-
 // EncodeSVG writes the board SVG representation into
 // the Encoder's writer.An error is returned if there
-// is there is an error writing data.
+// is an error writing data.
 func (e *encoder) EncodeSVG(b *octad.Board) error {
 	boardMap := b.SquareMap()
 	canvas := svg.New(e.w)

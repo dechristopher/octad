@@ -27,7 +27,7 @@ func castleMoveSet(t *testing.T, ofen string) map[string]bool {
 	g := gameFromOFEN(t, ofen)
 	set := map[string]bool{}
 	for _, m := range g.ValidMoves() {
-		if m.HasTag(KnightCastle) || m.HasTag(ClosePawnCastle) || m.HasTag(FarPawnCastle) {
+		if m.HasTag(NearCastle) || m.HasTag(CenterCastle) || m.HasTag(FarCastle) {
 			set[m.String()] = true
 		}
 	}
@@ -68,30 +68,30 @@ func TestCastleAvailability(t *testing.T) {
 		ofen string
 		want []string
 	}{
-		// legacy parity: standard start offers the knight and close castles;
-		// the far castle is blocked because the close pawn sits in its gap
+		// legacy parity: standard start offers the near and center castles;
+		// the far castle is blocked because the 'center' piece sits in its gap
 		{"standard white", "ppkn/4/4/NKPP w NCFncf - 0 1", []string{"b1a1", "b1c1"}},
 		{"standard black", "ppkn/4/4/NKPP b NCFncf - 0 1", []string{"c4b4", "c4d4"}},
 
-		// knight castle (adjacent swap) from each viable king square
+		// near castle (adjacent swap) from each viable king square
 		{"knight king b1", "3k/4/4/NK2 w N - 0 1", []string{"b1a1"}},
 		{"knight king c1 left", "3k/4/4/1NK1 w N - 0 1", []string{"c1b1"}},
 		{"knight king d1 corner", "3k/4/4/2NK w N - 0 1", []string{"d1c1"}},
 		// a knight one gap away cannot leap — no castle
 		{"knight one-gap blocked", "3k/4/4/1K1N w N - 0 1", nil},
 
-		// close pawn castle (adjacent swap)
-		{"close pawn king b1", "3k/4/4/1KP1 w C - 0 1", []string{"b1c1"}},
+		// center castle (adjacent swap)
+		{"center king b1", "3k/4/4/1KP1 w C - 0 1", []string{"b1c1"}},
 
-		// far pawn castle (one-gap leap) from b1 and the a1 corner
-		{"far pawn king b1", "3k/4/4/1K1P w NCF - 0 1", []string{"b1d1"}},
-		{"far pawn king a1", "3k/4/4/K1P1 w NCF - 0 1", []string{"a1c1"}},
-		// far blocked when the gap (the close pawn) is occupied; close remains
+		// far castle (one-gap leap) from b1 and the a1 corner
+		{"far king b1", "3k/4/4/1K1P w NCF - 0 1", []string{"b1d1"}},
+		{"far king a1", "3k/4/4/K1P1 w NCF - 0 1", []string{"a1c1"}},
+		// far blocked when the gap (the 'center' piece) is occupied; center remains
 		{"far blocked by close", "3k/4/4/1KPP w CF - 0 1", []string{"b1c1"}},
 
 		// rights are required: same geometry, no rights -> nothing
 		{"no rights", "3k/4/4/NK2 w - - 0 1", nil},
-		// the king must be on its home rank
+		// the king must be in its home rank
 		{"king off home rank", "3k/4/1K2/N3 w N - 0 1", nil},
 		// no castling while in check (black rook down the b-file)
 		{"in check", "1r1k/4/4/NK2 w N - 0 1", nil},
@@ -145,8 +145,8 @@ func TestCastleRightsLoss(t *testing.T) {
 		{"king move drops all", "ppkn/4/4/NKPP w NCFncf - 0 1", "b1b2", "ncf"},
 		// moving the knight drops only the knight right
 		{"knight move drops N", "ppkn/4/4/NKPP w NCFncf - 0 1", "a1c2", "CFncf"},
-		// moving the close pawn drops only its right
-		{"close pawn move drops C", "3k/4/4/1KPP w CF - 0 1", "c1c2", "F"},
+		// moving the center pawn drops only it's right
+		{"center pawn move drops C", "3k/4/4/1KPP w CF - 0 1", "c1c2", "F"},
 	}
 
 	for _, tc := range cases {

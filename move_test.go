@@ -23,8 +23,8 @@ type perfTest struct {
 // Counts were lowered when castling became position-relative. The legacy
 // castleMoves emitted a close/far castle from the king's home square based only
 // on the castle-rights bit and the gap being empty, without verifying that the
-// partner pawn was actually present. That produced phantom castles — e.g. with
-// the king on b1 and c1 empty it generated "b1c1" a second time (already a
+// partner pawn was actually present. That produced phantom castles — e.g., with
+// the king on b1 and c1 empty, it generated "b1c1" a second time (already a
 // legal king move) and would have materialized a pawn if played. Requiring the
 // real partner piece removes those duplicates, so the corrected node counts are
 // strictly smaller.
@@ -65,7 +65,7 @@ func countMoves(t *testing.T, originalPosition *Position, positions []*Position,
 		t.Log(originalPosition.String())
 		t.Log(originalPosition.board.Draw())
 		t.Log("##############################")
-		t.Log("# Details in JSONL (http://jsonlines.org)")
+		t.Log("# Details in JSONL (https://jsonlines.org)")
 		t.Log("###")
 		//for _, pos := range positions {
 		//	//t.Logf(`{"position": "%s", "moves": %d}`, pos.String(), len(pos.ValidMoves()))

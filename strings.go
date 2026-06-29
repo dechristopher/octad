@@ -2,13 +2,26 @@ package octad
 
 import "fmt"
 
-const methodName = "NoMethodCheckmateResignationDrawOfferStalemateThreefoldRepetitionFivefoldRepetitionFiftyMoveRuleSeventyFiveMoveRuleInsufficientMaterial"
-
-var methodIndex = [...]uint8{0, 8, 17, 28, 37, 46, 65, 83, 96, 115, 135}
-
+// String implements the fmt.Stringer interface for Method, returning the name
+// of the method that produced a game's outcome.
 func (i Method) String() string {
-	if i >= Method(len(methodIndex)-1) {
-		return fmt.Sprintf("Method(%d)", i)
+	switch i {
+	case NoMethod:
+		return "NoMethod"
+	case Checkmate:
+		return "Checkmate"
+	case Resignation:
+		return "Resignation"
+	case DrawOffer:
+		return "DrawOffer"
+	case Stalemate:
+		return "Stalemate"
+	case ThreefoldRepetition:
+		return "ThreefoldRepetition"
+	case TwentyFiveMoveRule:
+		return "TwentyFiveMoveRule"
+	case InsufficientMaterial:
+		return "InsufficientMaterial"
 	}
-	return methodName[methodIndex[i]:methodIndex[i+1]]
+	return fmt.Sprintf("Method(%d)", int(i))
 }

@@ -24,10 +24,14 @@ The fields are:
 2. Active color. "w" means White moves next, "b" means Black moves next.
 
 3. Castling availability. If neither color can castle, this is "-". Otherwise,
-   this has one or more letters: "N" (White can castle knightside), "C" (White
-   can castle with close pawn), "F" (White can castle with far pawn),  "n"
-   (Black can castle knightside), "c" (Black can castle with close pawn),
-   and/or "f" (Black can castle with far pawn).
+   this has one or more letters: "N" (White can castle with its near piece), "C"
+   (White can castle with its center piece), "F" (White can castle with its far
+   piece), "n"/"c"/"f" (the same near/center/far rights for Black). Castling is
+   position-relative: the king may castle from whatever home-rank square it
+   occupies, swapping with an adjacent near piece (the knight) or center piece
+   (a pawn), or leaping one square over an empty gap to a far piece (a pawn two
+   files away). In the standard starting setup the near, center, and far pieces
+   are the knight, the close pawn, and the far pawn respectively.
 
 4. En passant target square in algebraic notation. If there's no en passant
    target square, this is "-". If a pawn has just made a two-square move, this

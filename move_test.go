@@ -28,12 +28,18 @@ type perfTest struct {
 // legal king move) and would have materialized a pawn if played. Requiring the
 // real partner piece removes those duplicates, so the corrected node counts are
 // strictly smaller.
+//
+// Counts rose again when the castle slots became square-relative. Rights now
+// stay attached to their home-rank squares, so (for example) after 1. c2 the
+// d1 pawn still castles under the F right — the piece-identity model reshuffled
+// it into the forfeited C slot, wrongly killing the far castle for the rest of
+// the game.
 var perfResults = []perfTest{
 	{pos: unsafeOFEN("ppkn/4/4/NKPP w NCFncf - 0 1"), nodesPerDepth: []int{
-		10, 84, 630, 4216, 27885, 173414,
+		10, 84, 642, 4375, 29309, 183931,
 	}},
 	{pos: unsafeOFEN("ppkn/4/2P1/NK1P w NCFncf - 0 1"), nodesPerDepth: []int{
-		9, 66, 461, 2875,
+		9, 66, 461, 2924,
 	}},
 }
 
